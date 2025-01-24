@@ -14,6 +14,11 @@ public class CaptureObject : MonoBehaviour
     [SerializeField] private float _transparency;
 
     private bool _isCaptured = false;
+    public bool IsCaptured
+    {
+        get => _isCaptured;
+        set => _isCaptured = value;
+    }
     
     void Start()
     {
@@ -50,15 +55,18 @@ public class CaptureObject : MonoBehaviour
         _capturedObject.GetComponent<Collider2D>().enabled = false;
         _capturedObject.transform.SetParent(transform);
         _capturedObject.GetComponent<ApplyGravity>().IsInBubble = true;
+
+        _isCaptured = true;
     }
 
-    void OnRelease()
+    public void OnRelease()
     {
         ChangeTransparency(1);
         _capturedObject.GetComponent<Collider2D>().enabled = true;
         _capturedObject.transform.SetParent(null);
         _capturedObject.GetComponent<ApplyGravity>().IsInBubble = false;
-        Destroy(gameObject);
+
+        _isCaptured = false;
     }
 
     void ChangeTransparency(float newTransparency)
