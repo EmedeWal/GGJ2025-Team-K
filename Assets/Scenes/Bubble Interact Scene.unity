@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdbacf6df390abc4ca6cb78cc45975be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubblePrefab: {fileID: 870031609}
+  _bubblePrefab: {fileID: 2622248253314250229, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
 --- !u!1 &295785586
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,11 +467,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &870031609 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2622248253314250229, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-  m_PrefabInstance: {fileID: 8862834914173396007}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7197807799031369877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -524,6 +519,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8888591762858476440, guid: 8caf8013bf68b6b45acc202fc522030c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -537,6 +536,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1866573124742260928, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _transparency
+      value: 0.686
+      objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
