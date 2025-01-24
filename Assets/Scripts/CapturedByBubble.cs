@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CapturedByBubble : MonoBehaviour
@@ -19,7 +20,7 @@ public class CapturedByBubble : MonoBehaviour
             OnRelease();
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         print("collision");
         if (collision.gameObject.layer == 8)
@@ -32,7 +33,13 @@ public class CapturedByBubble : MonoBehaviour
 
     void OnCapture()
     {
+        _bubble.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        var colour = _bubble.GetComponentInChildren<SpriteRenderer>().color;
+        colour.a = 0.5f;
+        _bubble.GetComponentInChildren<SpriteRenderer>().color = colour;
+        GetComponent<Collider2D>().enabled = false;
         transform.SetParent(_bubble.transform);
+        transform.SetPositionAndRotation(_bubble.transform.position, Quaternion.identity);
         GetComponent<ApplyGravity>().IsInBubble = true;
     }
 

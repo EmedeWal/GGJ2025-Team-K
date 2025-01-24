@@ -23,8 +23,19 @@ public class ApplyGravity : MonoBehaviour
 
     void Update()
     {
-        if (!_isInBubble)
+        if (_isInBubble)
+        {
+            _rigidbody.gravityScale = 0;
+            _rigidbody.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            _rigidbody.gravityScale = 1;
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             AddGravity();
+        }
+        print(_rigidbody.linearVelocity);
+        
     }
     
     void AddGravity()
