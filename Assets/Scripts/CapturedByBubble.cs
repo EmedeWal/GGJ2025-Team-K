@@ -21,8 +21,10 @@ public class CapturedByBubble : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Bubble"))
+        print("collision");
+        if (collision.gameObject.layer == 8)
         {
+            print("captured");
             _bubble = collision.gameObject;
             OnCapture();
         }
