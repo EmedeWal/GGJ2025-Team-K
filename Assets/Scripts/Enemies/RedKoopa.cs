@@ -20,7 +20,7 @@ public class RedKoopa : MonoBehaviour, IKillable
 
     }
 
-    void IKillable.onSpikeHit()
+    void IKillable.OnSpikeHit()
     {
         die();
     }

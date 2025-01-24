@@ -7,12 +7,12 @@ public class Spikes : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out IKillable killable))
         {
-            killable.onSpikeHit();
+            killable.OnSpikeHit();
         }
     }
 }
 
 public interface IKillable
 {
-    public void onSpikeHit();
+    public void OnSpikeHit();
 }
