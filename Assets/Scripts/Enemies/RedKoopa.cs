@@ -26,7 +26,7 @@ public class RedKoopa : MonoBehaviour, IKillable
     }
 
     // It can do a lil death animation maybe, like falling down off-the-screen while spinning to keep it simple. In any case, it dies
-    public void death()
+    public void Death()
     {
 
     }
@@ -48,6 +48,6 @@ public class RedKoopa : MonoBehaviour, IKillable
 
     void IKillable.OnSpikeHit()
     {
-        death();
+        Death();
     }
 }
