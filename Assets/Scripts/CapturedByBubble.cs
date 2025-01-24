@@ -11,7 +11,7 @@ public class CapturedByBubble : MonoBehaviour
     }
 
     [Range(0, 1)]
-    [SerializeField] private float _transparency = 0.7f;
+    [SerializeField] private float _transparency;
 
     private bool _isCaptured = false;
     
