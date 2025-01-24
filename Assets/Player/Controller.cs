@@ -1,6 +1,5 @@
 namespace GGJ.Player
 {
-    using Unity.VisualScripting;
     using UnityEngine;
 
     [RequireComponent(typeof(BoxCollider2D))]
@@ -27,12 +26,12 @@ namespace GGJ.Player
         [SerializeField] private float _airMultiplier = 0.4f;
         [Range(0f, 1f)]
         [SerializeField] private float _jumpCutMultiplier = 0.6f;
-        [SerializeField] private float _jumpForce = 21f;
+        [SerializeField] private float _jumpForce = 20f;
 
         [Space]
         [Header("Gravity")]
-        [SerializeField] private float _defaultGravity = 2f;
-        [SerializeField] private float _gravityIncrement = 0.02f;
+        [SerializeField] private float _defaultGravity = 3f;
+        [SerializeField] private float _gravityIncrement = 0.03f;
 
         [Space]
         [Header("Other")]
@@ -51,10 +50,11 @@ namespace GGJ.Player
         {
             _boxCollider = GetComponent<BoxCollider2D>();
             _rigidbody = GetComponent<Rigidbody2D>();
-            _groundLayers = LayerMask.NameToLayer("Ground");
+            _groundLayers = LayerMask.GetMask("Ground");
 
             _rigidbody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             _rigidbody.interpolation = RigidbodyInterpolation2D.Interpolate;
+            _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             _rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
         }
 
@@ -75,8 +75,6 @@ namespace GGJ.Player
                 _timeSinceGrounded = _coyoteTime;
                 _rigidbody.gravityScale = _defaultGravity;
             }
-
-            Debug.Log(grounded);
 
             HorizontalMovement(grounded);
             VerticalMovement(grounded);
@@ -122,10 +120,9 @@ namespace GGJ.Player
             {
                 _rigidbody.gravityScale += _gravityIncrement;
 
-                if (_requestedJumpCut)
+                if (_requestedJumpCut && _rigidbody.linearVelocity.y > 0)
                     _rigidbody.AddForce((1 - _jumpCutMultiplier) * _rigidbody.linearVelocity.y * Vector2.down, ForceMode2D.Impulse);
             }
-
             _requestedJumpCut = false;
         }
 
@@ -160,11 +157,28 @@ namespace GGJ.Player
 
         private bool PerformGroundCheck()
         {
-            var size = _boxCollider.size;
-            var origin = _boxCollider.bounds.center;
-            origin.y -= size.y / 2;
+            (var origin, var size) = GetGroundCheckSizes();
+            return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
+        }
 
-            return Physics2D.OverlapBox(origin, new Vector2(size.x, _groundCheckSize), 0, _groundLayers);
+        private (Vector2 origin, Vector2 size) GetGroundCheckSizes()
+        {
+            var origin = _boxCollider.bounds.center;
+            origin.y -= _boxCollider.bounds.extents.y;
+            var size = new Vector2(_boxCollider.size.x, _groundCheckSize);
+
+            return (origin, size);  
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_boxCollider)
+            {
+                (var origin, var size) = GetGroundCheckSizes();
+
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(origin, size);
+            }
         }
     }
 }
