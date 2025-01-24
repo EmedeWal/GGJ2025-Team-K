@@ -29,4 +29,14 @@ public class Attributes : MonoBehaviour
             print("lol!");
         }
     }
+
+    public void AddHealth(float health)
+    {
+        _health += health;
+        if (_health > _maxHealth)
+        {
+            _health = _maxHealth;
+        }
+        _playerAirBubble.transform.localScale = new Vector3(_health / _maxHealth, _health / _maxHealth, 1);
+    }
 }
