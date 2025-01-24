@@ -9,6 +9,12 @@ public class CapturedByBubble : MonoBehaviour
         get => _bubble;
         set => _bubble = value;
     }
+
+    [Range(0, 1)]
+    [SerializeField] private float _transparency;
+
+    private bool _isCaptured = false;
+    
     void Start()
     {
         
@@ -16,16 +22,18 @@ public class CapturedByBubble : MonoBehaviour
 
     void Update()
     {
+        if (_isCaptured)
+        {
+            FollowBubble();
+        }
         if (Input.GetKeyDown(KeyCode.E))
             OnRelease();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        print("collision");
         if (collision.gameObject.layer == 8)
         {
-            print("captured");
             _bubble = collision.gameObject;
             OnCapture();
         }
@@ -34,18 +42,34 @@ public class CapturedByBubble : MonoBehaviour
     void OnCapture()
     {
         _bubble.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-        var colour = _bubble.GetComponentInChildren<SpriteRenderer>().color;
-        colour.a = 0.5f;
-        _bubble.GetComponentInChildren<SpriteRenderer>().color = colour;
+
+        ChangeTransparency(_transparency);
+
+        FollowBubble();
+
         GetComponent<Collider2D>().enabled = false;
         transform.SetParent(_bubble.transform);
-        transform.SetPositionAndRotation(_bubble.transform.position, Quaternion.identity);
         GetComponent<ApplyGravity>().IsInBubble = true;
     }
 
     void OnRelease()
     {
+        ChangeTransparency(1);
+        GetComponent<Collider2D>().enabled = true;
         transform.SetParent(null);
         GetComponent<ApplyGravity>().IsInBubble = false;
+    }
+
+    void ChangeTransparency(float newTransparency)
+    {
+        var renderer = GetComponentInChildren<SpriteRenderer>();
+        var colour = renderer.color;
+        colour.a = newTransparency;
+        renderer.color = colour;
+    }
+
+    void FollowBubble()
+    {
+        transform.position = _bubble.transform.position;
     }
 }
