@@ -58,6 +58,7 @@ public class CaptureObject : MonoBehaviour
         _capturedObject.GetComponent<Collider2D>().enabled = true;
         _capturedObject.transform.SetParent(null);
         _capturedObject.GetComponent<ApplyGravity>().IsInBubble = false;
+        Destroy(gameObject);
     }
 
     void ChangeTransparency(float newTransparency)
