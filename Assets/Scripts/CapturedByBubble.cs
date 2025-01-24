@@ -9,6 +9,9 @@ public class CapturedByBubble : MonoBehaviour
         get => _bubble;
         set => _bubble = value;
     }
+
+    [Range(0, 1)]
+    [SerializeField] private float _transparency = 0.7f;
     void Start()
     {
         
@@ -34,9 +37,9 @@ public class CapturedByBubble : MonoBehaviour
     void OnCapture()
     {
         _bubble.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-        var colour = _bubble.GetComponentInChildren<SpriteRenderer>().color;
-        colour.a = 0.5f;
-        _bubble.GetComponentInChildren<SpriteRenderer>().color = colour;
+        var colour = GetComponentInChildren<SpriteRenderer>().color;
+        colour.a = _transparency;
+        GetComponentInChildren<SpriteRenderer>().color = colour;
         GetComponent<Collider2D>().enabled = false;
         transform.SetParent(_bubble.transform);
         transform.SetPositionAndRotation(_bubble.transform.position, Quaternion.identity);
