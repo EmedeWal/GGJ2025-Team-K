@@ -37,7 +37,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
         _startPosition = transform.position;
 
         if (_Direction < 0)
-            _spriteRenderer.flipY = !_spriteRenderer.flipY;
+            _spriteRenderer.flipX = !_spriteRenderer.flipX;
 
         LevelManager.ResetGameState += LevelManager_resetGameState;
     }
@@ -51,7 +51,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
                 {
                     _Direction *= -1;
                     _CurrentSpeed = 0f;
-                    _spriteRenderer.flipY = !_spriteRenderer.flipY;
+                    _spriteRenderer.flipX = !_spriteRenderer.flipX;
                 }
                 _CurrentSpeed = Mathf.Clamp(_CurrentSpeed + _Acceleration, 0, _MaxSpeed);
                 _rigidbody.linearVelocity = new Vector2(_CurrentSpeed * _Direction, _rigidbody.linearVelocity.y);
