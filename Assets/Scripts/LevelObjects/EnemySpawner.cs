@@ -15,7 +15,7 @@ public class EnemySpawner : MonoBehaviour
         switch (enemyType)
         {
             case "redKoopa":
-                break;
+                break; 
             default:
                 break;
         }
