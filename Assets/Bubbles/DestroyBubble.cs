@@ -57,10 +57,29 @@ public class DestroyBubble : MonoBehaviour
             explosionDir.Normalize();
         }
 
-        print(explosionDir);
-        print(explosionDistance);
-        print(explosionForce);
-        rb.AddForce(Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius)) * explosionDir, mode);
-        print(Mathf.Lerp(0, explosionForce, 1 - explosionDistance) * explosionDir);
+    print("Explosion Direction: " + explosionDir);
+    print("Explosion Distance: " + explosionDistance);
+    print("Explosion Force: " + explosionForce);
+    print("Explosion Radius: " + explosionRadius);
+    print("Force Mode: " + mode);
+    print("Rigidbody Body Type: " + rb.bodyType);
+
+    float forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
+    Vector2 force = forceMagnitude * explosionDir;
+
+    print("Calculated Force Magnitude: " + forceMagnitude);
+    print("Calculated Force: " + force);
+
+    print(rb.constraints);
+
+    if (rb.bodyType != RigidbodyType2D.Kinematic)
+    {
+        rb.AddForce(force, mode);
+        print("Force applied to Rigidbody.");
+    }
+    else
+    {
+        print("Rigidbody is kinematic, no force applied.");
+    }
     }
 }

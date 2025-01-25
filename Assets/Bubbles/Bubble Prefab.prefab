@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _explosionForce: 10
-  _explosionRadius: 30
+  _explosionRadius: 5
   _upwardsModifier: 0
 --- !u!1 &7309242600320845641
 GameObject:
