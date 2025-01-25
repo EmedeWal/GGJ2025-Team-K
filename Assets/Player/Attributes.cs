@@ -1,15 +1,18 @@
+using System;
 using UnityEngine;
 
 public class Attributes : MonoBehaviour
 {
     [SerializeField] private float _maxHealth;
     private float _health;
+    private float _prevHealth;
     [SerializeField] private GameObject _playerAirBubble;
     private SpriteRenderer _playerAirBubbleSprite;
     void Start()
     {
         // _playerAirBubbleSprite = _playerAirBubble.GetComponentInChildren<SpriteRenderer>();
         _health = _maxHealth;
+        _prevHealth = _health;
     }
 
     void Update()
@@ -18,12 +21,13 @@ public class Attributes : MonoBehaviour
         {
             TakeDamage(10);
         }
+        LerpSpriteToHealth();
     }
 
     public void TakeDamage(float damage)
     {
+        _prevHealth = _health;
         _health -= damage;
-        _playerAirBubble.transform.localScale = new Vector3(_health / _maxHealth, _health / _maxHealth, 1);
         if (_health <= 0)
         {
             print("lol!");
@@ -32,11 +36,20 @@ public class Attributes : MonoBehaviour
 
     public void AddHealth(float health)
     {
+        _prevHealth = _health;
         _health += health;
         if (_health > _maxHealth)
         {
             _health = _maxHealth;
         }
-        _playerAirBubble.transform.localScale = new Vector3(_health / _maxHealth, _health / _maxHealth, 1);
+    }
+
+    void LerpSpriteToHealth()
+    {
+        var currentScale = _playerAirBubble.transform.localScale.x;
+        var newScale = _health / _maxHealth;        
+        // var response = 1f - Mathf.Exp(-5f * Time.deltaTime);
+        var scale = Mathf.Lerp(currentScale, newScale, 0.1f);
+        _playerAirBubble.transform.localScale = new Vector3(scale, scale, 0);
     }
 }

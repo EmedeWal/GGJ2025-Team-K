@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class FlyingEnemy : MonoBehaviour
+public class FlyingEnemy : MonoBehaviour, IKillable
 {
     /// <summary>
     /// Enemy that flies in a sine wave pattern.
@@ -67,5 +67,15 @@ public class FlyingEnemy : MonoBehaviour
         var dir = new Vector2(direction,0);
         //Debug.DrawRay(origin, dir, Color.blue, 50f);
         return Physics2D.Raycast(origin, dir, dir.magnitude, LayerMask.GetMask("Ground")); //dir.magnitude
+    }
+
+    void Death()
+    {
+        // Death logic
+    }
+
+    void IKillable.OnSpikeHit()
+    {
+        Death();
     }
 }
