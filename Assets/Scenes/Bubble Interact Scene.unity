@@ -181,7 +181,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -339,7 +339,7 @@ Transform:
   m_GameObject: {fileID: 753097692}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.08, y: -3.21, z: 0}
+  m_LocalPosition: {x: -0.71, y: -3.55, z: 0}
   m_LocalScale: {x: 5, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -535,6 +535,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BubblePrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _charge
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _lifeTime
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -658,9 +666,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: BubblePrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 2622248253314250229, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _charge
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _lifeTime
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: _initialForce
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: _explosionForce
@@ -682,7 +702,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 295785589}
   - {fileID: 8862834914173396007}
+  - {fileID: 1694420472}
   - {fileID: 7197807799031369877}
   - {fileID: 753097693}
   - {fileID: 573760195}
-  - {fileID: 1694420472}

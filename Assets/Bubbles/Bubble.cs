@@ -1,3 +1,5 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct CaptureStruct
@@ -12,58 +14,67 @@ public class Bubble : MonoBehaviour, IKillable
 {
     private CaptureStruct _struct;
 
+    // Remove this later in favor of passing it while initializing. Clamp to 1 and 2 (or other max value)
+    [Range(1f, 2f)]
+    [SerializeField] private float _charge;
+
     [Header("SETTINGS")]
+
+    [Space]
+    [Header("Charge")]
+    [SerializeField] private float _mass = 1f;
+    [SerializeField] private float _explosionForce = 20f;
+    [SerializeField] private float _explosionRadius = 5f;
+    [SerializeField] private float _lifeTime = 3f;
 
     [Space]
     [Header("Movement")]
     [SerializeField] private float _initialForce = 30f;
-    [SerializeField] private float _response = 3f;
     [SerializeField] private float _intensity = 3f;
     [SerializeField] private float _frequency = 3f;
-
-    [Space]
-    [Header("Explosion")]
-    [SerializeField] private float _explosionForce = 20f;
-    [SerializeField] private float _explosionRadius = 5f;
-    [SerializeField] private float _upwardsModifier = 0f;
-
-    [Space]
-    [Header("Lifetime")]
-    [SerializeField] private float _lifeTime = 3f;
 
     [Space]
     [Header("Visuals")]
     [Range(0, 1)]
     [SerializeField] private float _transparency;
 
+    private float _adjustedMass;
+    private float _adjustedLifeTime;
+    private float _adjustedExplosionForce;
+    private float _adjustedExplosionRadius;
+
     private Rigidbody2D _rigidbody;
     private Transform _transform;
-    private float _timer = 0;
-
+    private float _timer;
     private float _force;
 
     // make this an initialize function instead
     private void Start()
     {
+        _adjustedExplosionRadius = _adjustedExplosionRadius * _charge;
+        _adjustedExplosionForce = _explosionForce * _charge;
+        _adjustedLifeTime = _lifeTime * _charge;
+        _adjustedMass = _mass * _charge;
+
         _rigidbody = GetComponent<Rigidbody2D>();
         _transform = transform;
         
         Utils.SetRigidbody(_rigidbody);
+        _rigidbody.gravityScale = 0;
+        _rigidbody.mass = _adjustedMass;
 
+        _timer = _adjustedLifeTime;
         _force = _initialForce;
     }
 
     private void Update()
     {
-        // If no object is captured, tick life timer
-        if (!_struct.Transform)
-        {
-            _timer += Time.deltaTime;
-            if (_timer > _lifeTime)
-                Pop(true);
-        }
-        else
+        _timer -= Time.deltaTime;
+
+        if (_struct.Transform)
             _struct.Transform.localPosition = Vector2.zero;
+        else if (_timer <= 0)
+            Pop(release: true, explode: false);
     }
 
     private void FixedUpdate()
@@ -71,19 +82,20 @@ public class Bubble : MonoBehaviour, IKillable
         HandleMovement();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Capturable"))
+            CaptureObject(collision.transform);
+        else if (collision.transform.TryGetComponent(out Controller controller))
+            Pop(release: true, explode: controller.Rigidbody.linearVelocity.y < 0);
+        else
+            Pop(release: true, explode: true);
+    }
+
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(_transform.position, _explosionRadius);
-            foreach (Collider2D h in colliders)
-            {
-                Rigidbody2D temprb = h.GetComponent<Rigidbody2D>();
-                if (temprb != null && temprb != _rigidbody)
-                    AddExplosionForce(temprb, _explosionForce, _transform.position, _explosionRadius, _upwardsModifier);
-            }
-            Pop(true);
-        }
+        if (Input.GetMouseButtonDown(0))
+            Pop(release: true, explode: true);
     }
 
     private void HandleMovement()
@@ -93,18 +105,12 @@ public class Bubble : MonoBehaviour, IKillable
         var up = new Vector2(_transform.up.x, _transform.up.y);
         _rigidbody.linearVelocity = up * wave;
 
-        var response = 1f - Mathf.Exp(-_response * Time.fixedDeltaTime);
-        _force = Mathf.Lerp(_force, 0, response);
+        _force = Mathf.Lerp(0, _initialForce, _timer / _adjustedLifeTime);
         _rigidbody.AddForce(_transform.right * _force, ForceMode2D.Impulse);
+        Debug.Log(_timer / _adjustedLifeTime);
 
         if (_rigidbody.linearVelocity.magnitude < 0.05f)
             _rigidbody.linearVelocity = Vector2.zero;
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Capturable"))
-            CaptureObject(collision.transform);
     }
 
     private void CaptureObject(Transform capturedTransform)
@@ -142,35 +148,38 @@ public class Bubble : MonoBehaviour, IKillable
         _struct.Renderer.color = colour;
     }
 
-    private void AddExplosionForce(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, float upwardsModifier = 0.0f, ForceMode2D mode = ForceMode2D.Impulse)
+    private void CastExplosion()
+    {
+        var colliders = Physics2D.OverlapCircleAll(_transform.position, _explosionRadius);
+        foreach (var coll in colliders)
+            if (coll.TryGetComponent(out Rigidbody2D rigidbody) && rigidbody != _rigidbody)
+                AddExplosionForce(rigidbody, _adjustedExplosionForce, _transform.position, _adjustedExplosionRadius);
+    }
+
+    private void AddExplosionForce(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, ForceMode2D mode = ForceMode2D.Impulse)
     {
         var explosionDir = rb.position - explosionPosition;
         var explosionDistance = explosionDir.magnitude;
+        explosionDir.Normalize();
 
-        // Normalize without computing magnitude again
-        if (upwardsModifier == 0)
-            explosionDir /= explosionDistance;
-        else
+        if (explosionDir.sqrMagnitude > 0)
         {
-            // From Rigidbody.AddExplosionForce doc:
-            // If you pass a non-zero value for the upwardsModifier parameter, the direction
-            // will be modified by subtracting that value from the Y component of the centre point.
-            explosionDir.y += upwardsModifier;
-            explosionDir.Normalize();
+            var forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
+            var force = forceMagnitude * explosionDir;
+            rb.AddForce(force, mode);
         }
-
-        float forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
-        Vector2 force = forceMagnitude * explosionDir;
-        rb.AddForce(force, mode);
     }
 
-    private void Pop(bool release)
+    private void Pop(bool release, bool explode)
     {
-        if (_struct.Transform && release)
+        if (explode)
+            CastExplosion();
+
+        if (release && _struct.Transform)
             ReleaseObject();
 
         Destroy(gameObject);
     }
 
-    public void OnSpikeHit() => Pop(false);
+    public void OnSpikeHit() => Pop(release: false, explode: true);
 }
