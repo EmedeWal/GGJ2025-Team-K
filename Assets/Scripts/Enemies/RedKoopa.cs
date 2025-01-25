@@ -30,7 +30,6 @@ public class RedKoopa : MonoBehaviour, IKillable
         bubble,
         stunned
     }
-
     [SerializeField] private Status status = Status.roaming;
 
     void Start()
