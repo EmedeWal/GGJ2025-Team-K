@@ -14,7 +14,7 @@ public class DestroyBubble : MonoBehaviour
     private Rigidbody2D _rigidbody;
     void Start()
     {
-        
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -29,10 +29,12 @@ public class DestroyBubble : MonoBehaviour
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _explosionRadius);
             foreach (Collider2D h in colliders)
             {
-                print(h.name);
                 Rigidbody2D temprb = h.GetComponent<Rigidbody2D>();
-                if (temprb != null)
+                if (temprb != null && temprb != _rigidbody) 
+                {
+                    print(temprb.name);
                     AddExplosionForce(temprb, _explosionForce, transform.position, _explosionRadius, _upwardsModifier);
+                }
             }
             if (GetComponent<CaptureObject>().IsCaptured) GetComponent<CaptureObject>().OnRelease();
             Destroy(gameObject);
@@ -55,6 +57,10 @@ public class DestroyBubble : MonoBehaviour
             explosionDir.Normalize();
         }
 
-        rb.AddForce(Mathf.Lerp(0, explosionForce, (1 - explosionDistance)) * explosionDir, mode);
+        print(explosionDir);
+        print(explosionDistance);
+        print(explosionForce);
+        rb.AddForce(Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius)) * explosionDir, mode);
+        print(Mathf.Lerp(0, explosionForce, 1 - explosionDistance) * explosionDir);
     }
 }
