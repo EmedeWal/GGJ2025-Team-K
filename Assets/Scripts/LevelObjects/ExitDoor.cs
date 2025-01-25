@@ -7,7 +7,8 @@ public class ExitDoor : MonoBehaviour
     public bool unlocked = false;
     [SerializeField] private doorType type = doorType.unlocked;
 
-    //[SerializeField] private List<>
+    public int enemiesLeft = 3;
+    [SerializeField] private List<GameObject> enemies;
 
     public enum doorType
     {
@@ -23,7 +24,20 @@ public class ExitDoor : MonoBehaviour
 
     void Update()
     {
-        
+        if (type == doorType.enemyLocked)
+        {
+            foreach (GameObject x in enemies)
+            {
+                if (x == null)
+                {
+                    enemiesLeft -= 1;
+                }
+            }
+            if (enemiesLeft <= 0)
+            {
+                unlocked = true;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -49,6 +49,11 @@ public class LevelManager : MonoBehaviour
             changeLevels(currentLevel - 1);
             Debug.Log("Current Level - 1");
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            changeLevels(currentLevel);
+            Debug.Log("Restarted Level");
+        }
     }
 
     public void changeLevels(int newLevel)

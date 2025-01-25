@@ -74,9 +74,25 @@ public class BaseEnemy : MonoBehaviour, IKillable
         set => stunTimer = value;
     }
 
+    [HideInInspector] public Vector2 startPos
+    {
+        get => startPos;
+        set => startPos = value;
+    }
 
     void Start()
     {
+        if (direction == -1)
+        {
+            GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
+        }
+        startPos = transform.position;
+        LevelManager.resetGameState += LevelManager_resetGameState;
+    }
+
+    private void LevelManager_resetGameState()
+    {
+        transform.position = startPos;
     }
 
     protected virtual void FixedUpdate()
@@ -90,6 +106,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
                     {
                         direction *= -1;
                         currentSpeed = 0f;
+                        GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
                     }
                 }
                 currentSpeed = Mathf.Clamp(currentSpeed + acceleration, 0, MaxSpeed);
