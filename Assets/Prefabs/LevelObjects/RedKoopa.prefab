@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3344596200536597320}
   - component: {fileID: 7671474527832735753}
+  - component: {fileID: 4835695257429524643}
   - component: {fileID: 7736788361920849542}
   - component: {fileID: 4641017890827340002}
   - component: {fileID: 2701641991852569644}
@@ -47,9 +48,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 877c20ddb42a2bd45b012a8c080e0b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spawner: {fileID: 0}
+  hasSpawner: 0
   enemyId: 0
   die: 0
   status: roaming
+--- !u!114 &4835695257429524643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7428096278809634768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 963fea4f24e9d8c4dbc963f60b6cc9ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gravity: 9.8
 --- !u!212 &7736788361920849542
 SpriteRenderer:
   m_ObjectHideFlags: 0

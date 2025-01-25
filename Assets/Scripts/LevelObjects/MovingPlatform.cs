@@ -19,10 +19,10 @@ public class MovingPlatform : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.position = Vector2.MoveTowards(transform.position, currentTarget, 0.05f);
+        transform.localPosition = Vector2.MoveTowards(transform.localPosition, currentTarget, 0.05f);
 
         //If close to the target, switch to the next target on the list
-        if (Vector2.Distance(transform.position, currentTarget) <= 0.1f)
+        if (Vector2.Distance(transform.localPosition, currentTarget) <= 0.1f)
         {
             //Wraps around back to the first target
             if (currentTargetIndex == moveTargets.Count - 1) currentTargetIndex = 0;

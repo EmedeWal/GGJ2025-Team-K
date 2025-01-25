@@ -5,6 +5,7 @@ public class Button : MonoBehaviour
     [Header("Button Settings")]
     [SerializeField] private GameObject _pressedObject;
     [SerializeField] private bool _isPressed = false;
+    [SerializeField] private bool _playerCanPress = false;
     void Start()
     {
 
@@ -17,7 +18,7 @@ public class Button : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.TryGetComponent<Controller>(out var controller))
+        if (collider.TryGetComponent<Controller>(out var controller) && !_playerCanPress)
         {
             return;
         }
@@ -32,7 +33,7 @@ public class Button : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.TryGetComponent<Controller>(out var controller))
+        if (collider.TryGetComponent<Controller>(out var controller) && !_playerCanPress)
         {
             return;
         }
