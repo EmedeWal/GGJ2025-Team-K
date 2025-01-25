@@ -9,7 +9,6 @@ public enum Status
 
 public class BaseEnemy : MonoBehaviour, IKillable
 {
-    private Rigidbody2D _rigidbody;
     [HideInInspector] public Rigidbody2D Rigidbody
     {
         get => _rigidbody;
@@ -76,16 +75,18 @@ public class BaseEnemy : MonoBehaviour, IKillable
     }
 
     private SpriteRenderer _spriteRenderer;
+    private Rigidbody2D _rigidbody;
     private LayerMask _groundLayers;
     private Vector2 _startPosition;
 
     private void Start()
     {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _rigidbody = GetComponent<Rigidbody2D>(); 
         _groundLayers = LayerMask.GetMask("Ground");
         _startPosition = transform.position;
 
-        if (direction == -1)
+        if (direction < 0)
             _spriteRenderer.flipY = !_spriteRenderer.flipY;
 
         LevelManager.resetGameState += LevelManager_resetGameState;
@@ -96,7 +97,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
         switch (_currentState)
         {
             case Status.ROAMING:
-                if ((staysOnPlatform && CheckEdge()) || CheckWall()) 
+                if ((staysOnPlatform && CheckEdge()) || CheckWall())
                 {
                     direction *= -1;
                     currentSpeed = 0f;
@@ -117,7 +118,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.TryGetComponent(out Controller controller))
+        if (_currentState is Status.ROAMING && collision.transform.TryGetComponent(out Controller controller))
             controller.Kill();
     }
 

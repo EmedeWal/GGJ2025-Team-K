@@ -76,6 +76,7 @@ namespace Bubbles
             var constraints = isEnemy
                 ? RigidbodyConstraints2D.FreezeRotation
                 : RigidbodyConstraints2D.None;
+            _struct.Enemy.Rigidbody.constraints = constraints;
         }
 
         private void ChangeCapturedObjectAlpha(float alpha)

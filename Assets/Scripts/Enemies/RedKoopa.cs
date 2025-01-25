@@ -10,16 +10,16 @@ public class RedKoopa : BaseEnemy
     /// Needs to have an enemy spawner set in editor if hasSpawner is true
     /// </summary>
 
-    void Start()
-    {
-        Rigidbody = GetComponent<Rigidbody2D>();
-        staysOnPlatform = true;
-    }
+    //void Start()
+    //{
+    //    Rigidbody = GetComponent<Rigidbody2D>();
+    //    staysOnPlatform = true;
+    //}
 
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
+    //protected override void FixedUpdate()
+    //{
+    //    base.FixedUpdate();
+    //}
 
     // It can do a lil death animation maybe, like falling down off-the-screen while spinning to keep it simple. In any case, it dies
     // public void Death()
