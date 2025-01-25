@@ -1,6 +1,5 @@
-namespace Bubbles
+namespace Bubble
 {
-    using Unity.VisualScripting;
     using UnityEngine;
 
     public struct SinMovementStruct
@@ -44,7 +43,6 @@ namespace Bubbles
         [SerializeField] private float _transparency = 0.5f;
 
         private Rigidbody2D _rigidbody;
-        private Collider2D _collider;
         private Transform _transform;
 
         private Capture _capture;
@@ -54,19 +52,18 @@ namespace Bubbles
         private float _adjustedLifeTime;
         private float _lifeTimeLeft;
 
-        public void Initialize()
+        // make this an initialize function instead
+        private void Start()
         {
+            _adjustedLifeTime = _lifeTime * _charge;
+
             _rigidbody = GetComponent<Rigidbody2D>();
+            _transform = transform;
+
             Utils.SetRigidbody(_rigidbody);
             _rigidbody.gravityScale = 0f;
             _rigidbody.mass = 1 * _charge;
 
-            _collider = GetComponent<Collider2D>();
-            _collider.enabled = false;
-
-            _transform = transform;
-
-            _adjustedLifeTime = _lifeTime * _charge;
             _lifeTimeLeft = _adjustedLifeTime;
 
             SinMovementStruct movement = new()
@@ -89,11 +86,6 @@ namespace Bubbles
             _capture.Captured += _motion.Motion_ObjectCaptured;
         }
 
-        public void Launch()
-        {
-            _collider.enabled = true;
-        }
-
         private void OnDisable()
         {
             _capture.Cleanup();
@@ -101,9 +93,6 @@ namespace Bubbles
 
         private void Update()
         {
-            if (!_collider.enabled)
-                return;
-
             if (_capture.HasCapture)
                 _capture.Follow();
             else
@@ -116,9 +105,6 @@ namespace Bubbles
 
         private void FixedUpdate()
         {
-            if (!_collider.enabled)
-                return;
-
             if (!_capture.HasCapture)
                 _motion.HandleMovement(_transform.right, _transform.up, _adjustedLifeTime, _lifeTimeLeft);
             else

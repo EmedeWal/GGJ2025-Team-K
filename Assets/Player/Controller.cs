@@ -1,6 +1,4 @@
 using UnityEngine;
-using Bubbles;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -39,27 +37,14 @@ public class Controller : MonoBehaviour, IKillable
     [Header("Other")]
     [SerializeField] private float _groundCheckSize = 0.2f;
 
-    [Header("REFERENCES")]
-
-    [Space]
-    [Header("Bubble")]
-    [SerializeField] private Bubble _bubblePrefab;
-    [SerializeField] private float _spawnOffset = 1;
-    private Bubble _currentBubble;
-
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private LayerMask _groundLayers;
-
-    private Attributes _attributes;
-    private Camera _mainCamera;
 
     private int _requestedMovement = 0;
     private float _timeSinceGrounded = 0;
     private float _timeSinceJumpRequest = 0;
     private bool _requestedJumpCut = false;
-    private bool _requestedShoot = false;
-    private bool _requestedSustainedShoot = false;
 
     private bool _locked = false;
 
@@ -69,27 +54,19 @@ public class Controller : MonoBehaviour, IKillable
         _rigidbody = GetComponent<Rigidbody2D>();
         _groundLayers = LayerMask.GetMask("Ground");
 
-        _attributes = GetComponent<Attributes>();
-
-        _mainCamera = Camera.main;
-
         Utils.SetRigidbody(_rigidbody);
     }
 
     private void Update()
     {
-        if (_locked)
-            return;
+        var deltaTime = Time.deltaTime;
 
-        TickTimers(Time.deltaTime);
+        TickTimers(deltaTime);
         UpdateInput();
     }
 
     private void FixedUpdate()
     {
-        if (_locked)
-            return;
-
         var grounded = PerformGroundCheck();
 
         if (grounded)
@@ -98,10 +75,7 @@ public class Controller : MonoBehaviour, IKillable
             _rigidbody.gravityScale = _defaultGravity;
         }
 
-        var mouseWorldPos = (Vector2)_mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        HandleTurns(mouseWorldPos);
-        HandleShooting(mouseWorldPos);
-
+        HandleTurns();
         HorizontalMovement(grounded);
         VerticalMovement(grounded);
         HandleFriction(Mathf.Abs(_requestedMovement));
@@ -115,9 +89,6 @@ public class Controller : MonoBehaviour, IKillable
             _timeSinceJumpRequest = _jumpBuffer;
 
         _requestedJumpCut = _requestedJumpCut || Input.GetKeyUp(KeyCode.Space);
-
-        _requestedShoot = _requestedShoot || Input.GetMouseButtonDown(0);
-        _requestedSustainedShoot = Input.GetMouseButton(0);
     }
 
     private void TickTimers(float deltaTime)
@@ -126,37 +97,15 @@ public class Controller : MonoBehaviour, IKillable
         _timeSinceJumpRequest -= deltaTime;
     }
 
-    private void HandleTurns(Vector2 mouseWorldPos)
+    private void HandleTurns()
     {
-        var cursorX = mouseWorldPos.x;
         var localScale = transform.localScale;
-        if (localScale.x > 0 && cursorX < 0 || localScale.x < 0 && cursorX > 0)
+        if (localScale.x > 0 && _requestedMovement < 0 || localScale.x < 0 && _requestedMovement > 0)
         {
             localScale.x *= -1;
             transform.localScale = localScale;
         }
     }
-
-    private void HandleShooting(Vector2 mouseWorldPos)
-    {
-        if (_requestedShoot && !_currentBubble)
-        {
-            // Calculate dir towards mouth
-            var playerPos = _rigidbody.position;
-            var direction = (mouseWorldPos - playerPos).normalized;
-
-            // Spawn bubble
-            var spawnPosition = playerPos + direction * _spawnOffset;
-            _currentBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
-            _currentBubble.transform.SetParent(transform);
-
-            // Bubble should face the shoot direction
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _currentBubble.transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
-        _requestedShoot = false;
-    }
-
 
     private void HorizontalMovement(bool grounded)
     {
@@ -226,7 +175,7 @@ public class Controller : MonoBehaviour, IKillable
 
     public void Kill()
     {
-        _locked = true;
+
     }
 
     // Probably do particles instead of color lerping?
