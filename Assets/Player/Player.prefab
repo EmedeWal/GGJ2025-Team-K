@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8339777808591014633}
   - component: {fileID: 277388304042730440}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 10
   m_Sprite: {fileID: -5712959122012955994, guid: 290e50ddd3303ef4c80761021c89e162, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -202,12 +202,12 @@ Transform:
   m_GameObject: {fileID: 8164215543627391361}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7963927219830055304}
   - {fileID: 8339777808591014633}
+  - {fileID: 7963927219830055304}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &7989135065547511408
@@ -311,6 +311,6 @@ MonoBehaviour:
   _groundCheckSize: 0.2
   _bubblePrefab: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
   _spawnOffset: 1
-  _airBubbleTransform: {fileID: 0}
+  _airBubbleTransform: {fileID: 8339777808591014633}
   _maxHealth: 100
-  _bubbleResponse: 1
+  _bubbleResponse: 4

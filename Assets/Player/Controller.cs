@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Controller : MonoBehaviour, IKillable
 {
+    public Attributes Attributes => _attributes;
     public Rigidbody2D Rigidbody => _rigidbody;
 
     [Header("SETTINGS")]
@@ -58,6 +59,8 @@ public class Controller : MonoBehaviour, IKillable
     private LayerMask _bubbleLayers;
 
     private BubbleStruct _bubbleStruct;
+    private Attributes _attributes;
+
     private CustomCursor _customCursor;
     private Camera _mainCamera;
 
@@ -68,8 +71,6 @@ public class Controller : MonoBehaviour, IKillable
     private bool _requestedShoot = false;
     private bool _requestedSustainedShoot = false;
 
-    private bool _locked = false;
-
     private void Start()
     {
         _boxCollider = GetComponent<BoxCollider2D>();
@@ -77,6 +78,7 @@ public class Controller : MonoBehaviour, IKillable
         _groundLayers = LayerMask.GetMask("Ground");
         _bubbleLayers = LayerMask.GetMask("Bubble");
 
+        _attributes = new Attributes(_airBubbleTransform, _maxHealth, _bubbleResponse);
         _customCursor = FindFirstObjectByType<CustomCursor>();
         _mainCamera = Camera.main;
 
@@ -85,18 +87,23 @@ public class Controller : MonoBehaviour, IKillable
 
     private void Update()
     {
-        if (_locked)
-            return;
-
         TickTimers(Time.deltaTime);
         UpdateInput();
     }
 
+    private void LateUpdate()
+    {
+        _attributes.LateTick(Time.deltaTime);
+
+        if (_attributes.CurrentHealth == 0)
+        {
+            _attributes.SetCurrentToMaxHealth();
+            Kill();
+        }
+    }
+
     private void FixedUpdate()
     {
-        if (_locked)
-            return;
-
         var grounded = PerformGroundCheck();
 
         if (grounded)
@@ -167,22 +174,23 @@ public class Controller : MonoBehaviour, IKillable
             // Maintain bubble
             if (_requestedSustainedShoot)
             {
+                // Restrict downward aiming by clamping within allowed regions
                 var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                var clampedAngle = Mathf.Clamp(angle, -30f, 60f);
 
                 _bubbleStruct.Bubble.Charge(charge);
-                _bubbleStruct.Transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, 0, clampedAngle));
+                _bubbleStruct.Bubble.transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, 0, angle));
             }
             else
             {
                 // Release bubble. Either launch (if no overlap) or dissapate
-                if (!Physics2D.OverlapCircle(spawnPosition, _bubbleStruct.Collider.radius, _groundLayers))
+                var radius = _bubbleStruct.Collider.radius;
+                if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
                 {
-                    _bubbleStruct.Transform.SetParent(null);
+                    _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
                     _bubbleStruct.Bubble.Launch(charge);
                 }
                 else
-                    Destroy(_bubbleStruct.GameObject);
+                    Destroy(_bubbleStruct.Bubble.gameObject);
 
                 _bubbleStruct.Bubble = null;
             }
@@ -198,12 +206,9 @@ public class Controller : MonoBehaviour, IKillable
                 _bubbleStruct = new()
                 {
                     Bubble = spawnBubble,
-                    Transform = spawnBubble.transform,
-                    GameObject = spawnBubble.gameObject,
                     Collider = spawnBubble.GetComponent<CircleCollider2D>(),
                     Charge = 0.5f
                 };
-                _bubbleStruct.Transform.SetParent(transform);
                 spawnBubble.Initialize();
             }
         }
@@ -278,25 +283,7 @@ public class Controller : MonoBehaviour, IKillable
 
     public void Kill()
     {
-        //_locked = true;
+        var levelManager = GameObject.FindFirstObjectByType<LevelManager>();
+        levelManager.changeLevels(levelManager.currentLevel);
     }
-
-    // Probably do particles instead of color lerping?
-    //private IEnumerator ColorCoroutine(Color color, float duration)
-    //{
-    //    _spriteRenderer.color = color;
-    //    float time = 0;
-
-    //    while (time < duration)
-    //    {
-    //        time += _deltaTime;
-
-    //        float transitionTime = time / duration;
-    //        _spriteRenderer.color = Color.Lerp(color, _originalColor, transitionTime);
-
-    //        yield return null;
-    //    }
-
-    //    _spriteRenderer.color = _originalColor;
-    //}
 }

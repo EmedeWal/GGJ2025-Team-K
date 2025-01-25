@@ -2,52 +2,44 @@ using UnityEngine;
 
 public class Attributes
 {
-    private int _health;
-    private float _originalScale;
+    public int CurrentHealth { get; private set; }
 
-    public Attributes()
+    private readonly Transform _airBubbleTransform;
+    private readonly float _scaleFactor;
+    private readonly float _response;
+    private readonly int _maximumHealth;
+
+    public Attributes(Transform airBubbleTransform, int maximumHealth, float response)
     {
+        _airBubbleTransform = airBubbleTransform;
+        _maximumHealth = maximumHealth;
+        _response = response;
 
+        _scaleFactor = (airBubbleTransform.localScale.x + airBubbleTransform.localScale.y) / 2;
+        SetCurrentToMaxHealth();
+    }
+
+    public void SetCurrentToMaxHealth() => CurrentHealth = _maximumHealth;
+
+    public void LateTick(float deltaTime)
+    {
+        var currentScale = _airBubbleTransform.localScale.x;
+        var targetScale = (float)CurrentHealth / (float)_maximumHealth * _scaleFactor;
+
+        var response = 1f - Mathf.Exp(-_response * deltaTime);
+        var scale = Mathf.Lerp(currentScale, targetScale, response);
+        _airBubbleTransform.localScale = new Vector3(scale, scale, 0);
+    }
+
+    public void RemoveHealth(int damage)
+    {
+        CurrentHealth -= damage;
+        CurrentHealth = Mathf.Max(CurrentHealth, 0);
+    }
+
+    public void AddHealth(int health)
+    {
+        CurrentHealth += health;
+        CurrentHealth = Mathf.Min(CurrentHealth, _maximumHealth);
     }
 }
-
-    //private void Start()
-    //{
-    //    _originalScale = ((Vector2)_playerAirBubble.localScale).magnitude;
-
-    //    _health = _maxHealth;
-    //}
-
-    //private void Update()
-    //{
-    //    LerpSpriteToHealth();
-    //}
-
-    //public void TakeDamage(float damage)
-    //{
-    //    _health -= damage;
-    //    if (_health <= 0)
-    //    {
-    //        print("lol!");
-    //    }
-    //}
-
-    //public void AddHealth(float health)
-    //{
-    //    _health += health;
-    //    if (_health > _maxHealth)
-    //    {
-    //        _health = _maxHealth;
-    //    }
-    //}
-
-    //void LerpSpriteToHealth()
-    //{
-    //    var currentScale = _playerAirBubble.localScale.x;
-    //    var newScale = _health / _maxHealth * _originalScale;       
-        
-    //    var response = 1f - Mathf.Exp(-_lerpSpeed * Time.deltaTime);
-    //    var scale = Mathf.Lerp(currentScale, newScale, response);
-    //    _playerAirBubble.localScale = new Vector3(scale, scale, 0);
-    //}
-

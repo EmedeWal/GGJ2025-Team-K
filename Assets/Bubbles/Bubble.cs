@@ -12,8 +12,6 @@ namespace Bubbles
     public struct BubbleStruct
     {
         public Bubble Bubble;
-        public Transform Transform;
-        public GameObject GameObject;
         public CircleCollider2D Collider;
         public float Charge;
     }
@@ -148,6 +146,7 @@ namespace Bubbles
             else if (collision.transform.TryGetComponent(out Controller controller))
             {
                 var explode = controller.Rigidbody.linearVelocity.y < 0;
+                controller.Attributes.AddHealth(Volume);
                 Pop(release: true, explode: explode);
             }
         }
