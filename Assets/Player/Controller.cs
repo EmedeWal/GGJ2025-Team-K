@@ -160,7 +160,7 @@ public class Controller : MonoBehaviour
     {
         var origin = _boxCollider.bounds.center;
         origin.y -= _boxCollider.bounds.extents.y;
-        var size = new Vector2(_boxCollider.size.x, _groundCheckSize);
+        var size = new Vector2(_boxCollider.size.x * 0.8f, _groundCheckSize);
 
         return (origin, size);
     }

@@ -6,9 +6,9 @@ public class DestroyBubble : MonoBehaviour
     [Header("SETTINGS")]
     [Space]
     [Header("Explosion")]
-    [SerializeField] private float _explosionForce;
-    [SerializeField] private float _explosionRadius;
-    [SerializeField] private float _upwardsModifier;
+    [SerializeField] private float _explosionForce = 20f;
+    [SerializeField] private float _explosionRadius = 5f;
+    [SerializeField] private float _upwardsModifier = 0;
 
 
     private Rigidbody2D _rigidbody;

@@ -619,11 +619,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2.05
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.43
+      value: -0.47
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -631,19 +631,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9760481
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.21755491
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -655,13 +655,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -25.131
       objectReference: {fileID: 0}
     - target: {fileID: 2622248253314250229, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_Name
       value: BubblePrefab
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _initialForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _explosionForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _explosionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1869522659707607548, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

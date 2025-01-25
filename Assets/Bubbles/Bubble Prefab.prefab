@@ -111,12 +111,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e66255dabc68284984e52b933cd1a40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transparency: 0.712
   _initialForce: 20
   _response: 1
   _intensity: 0.3
   _frequency: 15
   _lifeTime: 7
+  _transparency: 0.5
 --- !u!114 &1869522659707607548
 MonoBehaviour:
   m_ObjectHideFlags: 0

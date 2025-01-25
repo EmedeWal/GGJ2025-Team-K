@@ -2,17 +2,7 @@ using UnityEngine;
 
 public class Bubble : MonoBehaviour, IKillable
 {
-    private GameObject _capturedObject;
-    public GameObject CapturedObject
-    {
-        get => _capturedObject;
-        set => _capturedObject = value;
-    }
-
-    [Range(0, 1)]
-    [SerializeField] private float _transparency;
-
-    private bool _isCaptured = false;
+    private Transform _capturedTransform;
 
     [Header("SETTINGS")]
 
@@ -24,8 +14,19 @@ public class Bubble : MonoBehaviour, IKillable
     [SerializeField] private float _frequency = 3f;
 
     [Space]
+    [Header("Explosion")]
+    [SerializeField] private float _explosionForce = 20f;
+    [SerializeField] private float _explosionRadius = 5f;
+    [SerializeField] private float _upwardsModifier = 0f;
+
+    [Space]
     [Header("Lifetime")]
     [SerializeField] private float _lifeTime = 3f;
+
+    [Space]
+    [Header("Visuals")]
+    [Range(0, 1)]
+    [SerializeField] private float _transparency;
 
     private Rigidbody2D _rigidbody;
     private Transform _transform;
@@ -33,6 +34,7 @@ public class Bubble : MonoBehaviour, IKillable
 
     private float _force;
 
+    // make this an initialize function instead
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -45,24 +47,33 @@ public class Bubble : MonoBehaviour, IKillable
 
     private void Update()
     {
-        var deltaTime = Time.deltaTime;
-        
-        if (!_isCaptured)
+        // If no object is captured, tick life timer
+        if (!_capturedTransform)
         {
-            _timer += deltaTime;
+            _timer += Time.deltaTime;
             if (_timer > _lifeTime)
-                Debug.Log("lifetime over");
+                Pop(true);
         }
-
-
-        // Change this by clicking later
-        if (Input.GetKeyDown(KeyCode.E))
-            OnRelease();
     }
 
     private void FixedUpdate()
     {
         HandleMovement();
+    }
+
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(_transform.position, _explosionRadius);
+            foreach (Collider2D h in colliders)
+            {
+                Rigidbody2D temprb = h.GetComponent<Rigidbody2D>();
+                if (temprb != null && temprb != _rigidbody)
+                    AddExplosionForce(temprb, _explosionForce, _transform.position, _explosionRadius, _upwardsModifier);
+            }
+            Pop(true);
+        }
     }
 
     private void HandleMovement()
@@ -80,40 +91,68 @@ public class Bubble : MonoBehaviour, IKillable
             _rigidbody.linearVelocity = Vector2.zero;
     }
 
-    public void OnSpikeHit() => OnRelease();
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Capturable"))
+            CaptureObject(collision.transform);
+    }
+
+    private void CaptureObject(Transform capturedTransform)
+    {
+        _capturedTransform = capturedTransform;
+
+        ChangeCapturedObjectAlpha(_transparency);
+
+        _capturedTransform.transform.SetParent(transform);
+        _capturedTransform.transform.localPosition = Vector2.zero;
+        _capturedTransform.GetComponent<Collider2D>().enabled = false;
+    }
+
+    private void ReleaseObject()
+    {
+        ChangeCapturedObjectAlpha(1);
+
+        _capturedTransform.transform.SetParent(null);
+        _capturedTransform.GetComponent<Collider2D>().enabled = true;
+    }
+
+    private void ChangeCapturedObjectAlpha(float alpha)
+    {
+        var renderer = _capturedTransform.GetComponentInChildren<SpriteRenderer>();
+        var colour = renderer.color;
+        colour.a = alpha;
+        renderer.color = colour;
+    }
+
+    private void AddExplosionForce(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, float upwardsModifier = 0.0f, ForceMode2D mode = ForceMode2D.Impulse)
+    {
+        var explosionDir = rb.position - explosionPosition;
+        var explosionDistance = explosionDir.magnitude;
+
+        // Normalize without computing magnitude again
+        if (upwardsModifier == 0)
+            explosionDir /= explosionDistance;
+        else
         {
-            _capturedObject = collision.gameObject;
-            OnCapture();
+            // From Rigidbody.AddExplosionForce doc:
+            // If you pass a non-zero value for the upwardsModifier parameter, the direction
+            // will be modified by subtracting that value from the Y component of the centre point.
+            explosionDir.y += upwardsModifier;
+            explosionDir.Normalize();
         }
+
+        float forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
+        Vector2 force = forceMagnitude * explosionDir;
+        rb.AddForce(force, mode);
     }
 
-    void OnCapture()
+    private void Pop(bool release)
     {
-        ChangeTransparency(_transparency);
-
-        _capturedObject.transform.SetParent(transform);
-        _capturedObject.transform.localPosition = Vector2.zero;
-        _capturedObject.GetComponent<Collider2D>().enabled = false;
-    }
-
-    void OnRelease()
-    {
-        ChangeTransparency(1);
-        _capturedObject.GetComponent<Collider2D>().enabled = true;
-        _capturedObject.transform.SetParent(null);
+        if (_capturedTransform != null && release)
+            ReleaseObject();
 
         Destroy(gameObject);
     }
 
-    void ChangeTransparency(float newTransparency)
-    {
-        var renderer = _capturedObject.GetComponentInChildren<SpriteRenderer>();
-        var colour = renderer.color;
-        colour.a = newTransparency;
-        renderer.color = colour;
-    }
+    public void OnSpikeHit() => Pop(false);
 }
