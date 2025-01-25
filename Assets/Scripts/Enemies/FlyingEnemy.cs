@@ -3,18 +3,27 @@ using UnityEngine.UIElements;
 
 public class FlyingEnemy : MonoBehaviour
 {
+    /// <summary>
+    /// Enemy that flies in a sine wave pattern.
+    /// 
+    /// Needs to have an enemy spawner set in editor if hasSpawner is true
+    /// </summary>
+
     private Rigidbody2D _rigidbody;
     public EnemySpawner _spawner;
 
     public bool hasSpawner = false;
     [SerializeField] private int enemyId = 0; //Used to match this enemy to a corresponding spawner
 
+    [Space]
+    [Header("Sine Movement")]
     [SerializeField] private float curveSpeed = 5f; 
     [SerializeField] private float curveRadius = 2f;
     [SerializeField] private float currentSpeed = 0.1f;
     private float sinCenterY;
     private float direction = -1; //1 for left, -1 for right
-
+    
+    [Space]
     [SerializeField] private bool die = false;
     void Start()
     {
