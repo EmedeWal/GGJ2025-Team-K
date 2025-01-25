@@ -355,7 +355,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8269393365371642189, guid: 40d5be39b7200844092dff95e13d2c91, type: 3}
       propertyPath: _jumpForce
-      value: 13
+      value: 20.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2618,11 +2618,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.23
+      value: 0.92
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6
+      value: -1.49
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2661,8 +2661,16 @@ PrefabInstance:
       value: Bubble Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _charge
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: _lifeTime
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _floatVelocity
+      value: 3.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
