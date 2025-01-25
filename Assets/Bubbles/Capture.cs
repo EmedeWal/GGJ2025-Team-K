@@ -1,4 +1,4 @@
-namespace Bubble
+namespace Bubbles
 {
     using UnityEngine;
     using System;

@@ -1,4 +1,4 @@
-namespace Bubble
+namespace Bubbles
 {
     using UnityEngine;
 
@@ -43,6 +43,7 @@ namespace Bubble
         [SerializeField] private float _transparency = 0.5f;
 
         private Rigidbody2D _rigidbody;
+        private Collider2D _collider;
         private Transform _transform;
 
         private Capture _capture;
@@ -55,15 +56,17 @@ namespace Bubble
         // make this an initialize function instead
         private void Start()
         {
-            _adjustedLifeTime = _lifeTime * _charge;
-
             _rigidbody = GetComponent<Rigidbody2D>();
-            _transform = transform;
-
             Utils.SetRigidbody(_rigidbody);
             _rigidbody.gravityScale = 0f;
             _rigidbody.mass = 1 * _charge;
 
+            _collider = GetComponent<Collider2D>();
+            _collider.enabled = false;
+
+            _transform = transform;
+
+            _adjustedLifeTime = _lifeTime * _charge;
             _lifeTimeLeft = _adjustedLifeTime;
 
             SinMovementStruct movement = new()
@@ -93,6 +96,9 @@ namespace Bubble
 
         private void Update()
         {
+            if (!_collider.enabled)
+                return;
+
             if (_capture.HasCapture)
                 _capture.Follow();
             else
@@ -105,6 +111,9 @@ namespace Bubble
 
         private void FixedUpdate()
         {
+            if (!_collider.enabled)
+                return;
+
             if (!_capture.HasCapture)
                 _motion.HandleMovement(_transform.right, _transform.up, _adjustedLifeTime, _lifeTimeLeft);
             else
