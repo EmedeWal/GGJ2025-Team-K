@@ -1,8 +1,16 @@
 using UnityEngine;
 
+public struct CaptureStruct
+{ 
+    public Transform Transform;
+    public Collider2D Collider;
+    public Rigidbody2D Rigidbody;
+    public SpriteRenderer Renderer;
+}
+
 public class Bubble : MonoBehaviour, IKillable
 {
-    private Transform _capturedTransform;
+    private CaptureStruct _struct;
 
     [Header("SETTINGS")]
 
@@ -48,12 +56,14 @@ public class Bubble : MonoBehaviour, IKillable
     private void Update()
     {
         // If no object is captured, tick life timer
-        if (!_capturedTransform)
+        if (!_struct.Transform)
         {
             _timer += Time.deltaTime;
             if (_timer > _lifeTime)
                 Pop(true);
         }
+        else
+            _struct.Transform.localPosition = Vector2.zero;
     }
 
     private void FixedUpdate()
@@ -99,29 +109,37 @@ public class Bubble : MonoBehaviour, IKillable
 
     private void CaptureObject(Transform capturedTransform)
     {
-        _capturedTransform = capturedTransform;
+        _struct = new()
+        {
+            Transform = capturedTransform,
+            Collider = capturedTransform.GetComponent<Collider2D>(),
+            Rigidbody = capturedTransform.GetComponent<Rigidbody2D>(),
+            Renderer = capturedTransform.GetComponentInChildren<SpriteRenderer>(),
+        }; 
 
         ChangeCapturedObjectAlpha(_transparency);
 
-        _capturedTransform.transform.SetParent(transform);
-        _capturedTransform.transform.localPosition = Vector2.zero;
-        _capturedTransform.GetComponent<Collider2D>().enabled = false;
+        _struct.Transform.SetParent(transform);
+        _struct.Transform.localPosition = Vector2.zero;
+        _struct.Collider.enabled = false;
+        _struct.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     private void ReleaseObject()
     {
         ChangeCapturedObjectAlpha(1);
 
-        _capturedTransform.transform.SetParent(null);
-        _capturedTransform.GetComponent<Collider2D>().enabled = true;
+        _struct.Transform.SetParent(null);
+        _struct.Collider.enabled = true;
+        _struct.Rigidbody.constraints = RigidbodyConstraints2D.None;
+        _struct.Transform = null;
     }
 
     private void ChangeCapturedObjectAlpha(float alpha)
     {
-        var renderer = _capturedTransform.GetComponentInChildren<SpriteRenderer>();
-        var colour = renderer.color;
+        var colour = _struct.Renderer.color;
         colour.a = alpha;
-        renderer.color = colour;
+        _struct.Renderer.color = colour;
     }
 
     private void AddExplosionForce(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, float upwardsModifier = 0.0f, ForceMode2D mode = ForceMode2D.Impulse)
@@ -148,7 +166,7 @@ public class Bubble : MonoBehaviour, IKillable
 
     private void Pop(bool release)
     {
-        if (_capturedTransform != null && release)
+        if (_struct.Transform && release)
             ReleaseObject();
 
         Destroy(gameObject);
