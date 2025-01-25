@@ -38,6 +38,10 @@ public class TriggerableByButton : MonoBehaviour
         switch (type)
         {
             case triggerableType.exitDoor:
+                if (TryGetComponent<ExitDoor>(out ExitDoor door))
+                {
+                    door.unlocked = false;
+                }
                 break;
             case triggerableType.turnsUnsolid:
                 //TODO: Change sprite here
