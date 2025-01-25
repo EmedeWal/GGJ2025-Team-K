@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Attributes
 {
-    public int CurrentHealth { get; private set; }
+    public float CurrentHealth { get; private set; }
 
     private readonly Transform _airBubbleTransform;
     private readonly float _scaleFactor;
     private readonly float _response;
-    private readonly int _maximumHealth;
+    private readonly float _maximumHealth;
 
-    public Attributes(Transform airBubbleTransform, int maximumHealth, float response)
+    public Attributes(Transform airBubbleTransform, float maximumHealth, float response)
     {
         _airBubbleTransform = airBubbleTransform;
         _maximumHealth = maximumHealth;
@@ -24,20 +24,20 @@ public class Attributes
     public void LateTick(float deltaTime)
     {
         var currentScale = _airBubbleTransform.localScale.x;
-        var targetScale = (float)CurrentHealth / (float)_maximumHealth * _scaleFactor;
+        var targetScale = CurrentHealth / _maximumHealth * _scaleFactor;
 
         var response = 1f - Mathf.Exp(-_response * deltaTime);
         var scale = Mathf.Lerp(currentScale, targetScale, response);
         _airBubbleTransform.localScale = new Vector3(scale, scale, 0);
     }
 
-    public void RemoveHealth(int damage)
+    public void RemoveHealth(float damage)
     {
         CurrentHealth -= damage;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
     }
 
-    public void AddHealth(int health)
+    public void AddHealth(float health)
     {
         CurrentHealth += health;
         CurrentHealth = Mathf.Min(CurrentHealth, _maximumHealth);
