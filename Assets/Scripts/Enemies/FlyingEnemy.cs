@@ -22,9 +22,17 @@ public class FlyingEnemy : MonoBehaviour
     [SerializeField] private float currentSpeed = 0.1f; // Lateral speed of the enemy
     private float sinCenterY;
     private float direction = -1; //1 for left, -1 for right
-    
+
     [Space]
     [SerializeField] private bool die = false;
+    public enum Status
+    {
+        roaming,
+        bubble,
+        stunned
+    }
+    [SerializeField] private Status status = Status.roaming;
+
     void Start()
     {
         sinCenterY = transform.position.y;
