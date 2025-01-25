@@ -37,6 +37,12 @@ public class FlyingEnemy : BaseEnemy
             case Status.bubble:
                 break;
             case Status.stunned:
+                StunTimer += Time.deltaTime;
+                if (StunTimer >= StunMaxTime)
+                {
+                    ThisStatus = Status.roaming;
+                    StunTimer = 0f;
+                }
                 break;
             default:
                 break;
