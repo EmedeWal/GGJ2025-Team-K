@@ -26,17 +26,21 @@ public class DestroyBubble : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            // Grab all the colliders in the explosion radius
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _explosionRadius);
             foreach (Collider2D h in colliders)
             {
                 Rigidbody2D temprb = h.GetComponent<Rigidbody2D>();
+                // if the object has a rigidbody and it's not the same as the bubble's rigidbody
                 if (temprb != null && temprb != _rigidbody) 
                 {
                     print(temprb.name);
                     AddExplosionForce(temprb, _explosionForce, transform.position, _explosionRadius, _upwardsModifier);
                 }
             }
+            // If the bubble has something captured, release it
             if (GetComponent<CaptureObject>().IsCaptured) GetComponent<CaptureObject>().OnRelease();
+
             Destroy(gameObject);
         }
     }
@@ -57,6 +61,7 @@ public class DestroyBubble : MonoBehaviour
             explosionDir.Normalize();
         }
 
+        // The more the object is far from the explosion position, the less force it will receive
         float forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
         Vector2 force = forceMagnitude * explosionDir;
         rb.AddForce(force, mode);

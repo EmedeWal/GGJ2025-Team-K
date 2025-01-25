@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class RedKoopa : MonoBehaviour, IKillable
@@ -9,7 +10,7 @@ public class RedKoopa : MonoBehaviour, IKillable
     /// Needs to have an enemy spawner set in editor if hasSpawner is true
     /// </summary>
 
-    private Rigidbody2D _rigibody;
+    private Rigidbody2D _rigidbody;
     public EnemySpawner _spawner;
 
     public bool hasSpawner = false;
@@ -23,18 +24,24 @@ public class RedKoopa : MonoBehaviour, IKillable
 
     [SerializeField] private bool die = false;
 
-    [SerializeField] private string status = "roaming"; //roaming means walking around, bubble means in a bubble (so doing nothing), stunned means right after being released from a bubble it cannot move for a bit
+    public enum Status
+    {
+        roaming,
+        bubble,
+        stunned
+    }
+    [SerializeField] private Status status = Status.roaming;
 
     void Start()
     {
-        _rigibody = GetComponent<Rigidbody2D>();
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
     {
         switch (status)
         {
-            case "roaming":
+            case Status.roaming:
                 if (staysOnPlatform)
                 {
                     if (CheckEdge() || CheckWall()) //About to fall off platform  
@@ -45,11 +52,12 @@ public class RedKoopa : MonoBehaviour, IKillable
                     }
                 }
                 currentSpeed = Mathf.Clamp(currentSpeed + acceleration, 0, maxSpeed);
-                _rigibody.linearVelocity = new Vector2(currentSpeed * direction, _rigibody.linearVelocity.y);
+                _rigidbody.linearVelocity = new Vector2(currentSpeed * direction, _rigidbody.linearVelocity.y);
                 break;
-            case "bubble":
+            case Status.bubble:
                 break;
-            case "stunned":
+            case Status.stunned:
+                break;
             default:
                 break;
         }
@@ -68,15 +76,15 @@ public class RedKoopa : MonoBehaviour, IKillable
         //Was trying to do a death animation, wasn't working so shelving this for now
         status = "stunned";
         GetComponent<Collider2D>().enabled = false;
-        _rigibody.linearVelocity = new Vector2(0, _rigibody.linearVelocity.y);
-        _rigibody.AddForce(new Vector2(0, 50f));
+        _rigidbody.linearVelocity = new Vector2(0, _rigidbody.linearVelocity.y);
+        _rigidbody.AddForce(new Vector2(0, 50f));
         */
     }
 
     //Returns true if the enemy is about to drop off an edge
     bool CheckEdge()
     {
-        var pos = _rigibody.position;
+        var pos = _rigidbody.position;
         pos.x += direction;
         var dir = Vector2.down;
         //Debug.DrawRay(pos, dir, Color.red, 50f);
@@ -85,7 +93,7 @@ public class RedKoopa : MonoBehaviour, IKillable
 
     bool CheckWall()
     {
-        var origin = _rigibody.position;
+        var origin = _rigidbody.position;
         var dir = new Vector2(direction,0);
         //Debug.DrawRay(origin, dir, Color.blue, 50f);
         return Physics2D.Raycast(origin, dir, dir.magnitude, LayerMask.GetMask("Ground")); //dir.magnitude
