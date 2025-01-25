@@ -18,7 +18,7 @@ namespace Bubbles
 
     public class Bubble : MonoBehaviour, IKillable
     {
-        public int Volume { get; private set; }
+        public float Volume { get; private set; }
 
         [Header("SETTINGS")]
 
