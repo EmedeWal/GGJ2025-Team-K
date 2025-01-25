@@ -15,8 +15,12 @@ public class Button : MonoBehaviour
         
     }
 
-    void OnTriggerEnter2D()
+    void OnTriggerEnter2D(Collider2D collider)
     {
+        if (collider.TryGetComponent<Controller>(out var controller))
+        {
+            return;
+        }
         if (!_isPressed)
         {
             _isPressed = true;
@@ -26,8 +30,13 @@ public class Button : MonoBehaviour
         }
     }
 
-    void OnTriggerExit2D()
+    void OnTriggerExit2D(Collider2D collider)
     {
+        if (collider.TryGetComponent<Controller>(out var controller))
+        {
+            return;
+        }
+
         if (_isPressed)
         {
             _isPressed = false;
