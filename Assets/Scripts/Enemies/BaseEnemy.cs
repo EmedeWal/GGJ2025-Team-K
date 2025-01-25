@@ -81,7 +81,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     protected virtual void FixedUpdate()
     {
-        print(staysOnPlatform);
         switch (thisStatus)
         {
             case Status.roaming:
