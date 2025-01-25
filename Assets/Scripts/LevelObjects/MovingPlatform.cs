@@ -19,7 +19,7 @@ public class MovingPlatform : MonoBehaviour
         startPosition = transform.position;
         currentTarget = moveTargets[0];
 
-        LevelManager.resetGameState += LevelManager_resetGameState;
+        LevelManager.ResetGameState += LevelManager_resetGameState;
     }
 
     private void LevelManager_resetGameState()

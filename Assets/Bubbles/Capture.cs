@@ -56,7 +56,7 @@ namespace Bubbles
             _struct.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
 
             if (_struct.Enemy)
-                _struct.Enemy.ThisStatus = Status.BUBBLE;
+                _struct.Enemy.UpdateState(State.BUBBLED);
 
             Captured?.Invoke();
         }
@@ -67,7 +67,7 @@ namespace Bubbles
 
             var isEnemy = _struct.Enemy;
             if (isEnemy)
-                _struct.Enemy.ThisStatus = Status.STUNNED;
+                _struct.Enemy.UpdateState(State.STUNNED);
 
             _struct.Transform.SetParent(null);
             _struct.Collider.enabled = true;
@@ -76,7 +76,7 @@ namespace Bubbles
             var constraints = isEnemy
                 ? RigidbodyConstraints2D.FreezeRotation
                 : RigidbodyConstraints2D.None;
-            _struct.Enemy.Rigidbody.constraints = constraints;
+            _struct.Rigidbody.constraints = constraints;
         }
 
         private void ChangeCapturedObjectAlpha(float alpha)

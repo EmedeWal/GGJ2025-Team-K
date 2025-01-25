@@ -27,7 +27,7 @@ namespace Bubbles
 
         public void HandleMovement(Vector3 rightDirection, Vector3 upDirection, float lifeTime, float currentTime)
         {
-            //Calculate sine wave oscillation along the "up" direction
+            //Calculate sine wave oscillation along the "up" _Direction
             var wave = Mathf.Sin(currentTime * _movement.Frequency) * _rigidbody.linearVelocity.magnitude * _movement.Intensity;
             _rigidbody.linearVelocity = (Vector2)upDirection * wave;
 

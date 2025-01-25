@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 446724380131366351}
-  - component: {fileID: 8471027307777750778}
+  - component: {fileID: 2130845387701259634}
   - component: {fileID: 8804458007075524721}
   - component: {fileID: 6166168255772280271}
   m_Layer: 0
@@ -122,7 +122,7 @@ Transform:
   - {fileID: 4270049029242861565}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8471027307777750778
+--- !u!114 &2130845387701259634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,19 +131,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 9133214167361586140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 877c20ddb42a2bd45b012a8c080e0b9c, type: 3}
+  m_Script: {fileID: 11500000, guid: bcf43191204ac1647ae8f049f2a98ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawner: {fileID: 0}
-  hasSpawner: 0
-  staysOnPlatform: 1
-  enemyId: 0
-  acceleration: 0.1
-  maxSpeed: 3
-  die: 0
-  _currentState: 0
-  stunMaxTime: 1
-  stunTimer: 0
+  _Acceleration: 0.1
+  _MaxSpeed: 3
+  _Direction: -1
+  _CurrentState: 0
+  _TotalStunTime: 1
 --- !u!61 &8804458007075524721
 BoxCollider2D:
   m_ObjectHideFlags: 0

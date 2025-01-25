@@ -171,7 +171,7 @@ public class Controller : MonoBehaviour, IKillable
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
             var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
 
-            // Maintain BUBBLE
+            // Maintain BUBBLED
             if (_requestedSustainedShoot)
             {
                 // Restrict downward aiming by clamping within allowed regions
@@ -182,7 +182,7 @@ public class Controller : MonoBehaviour, IKillable
             }
             else
             {
-                // Release BUBBLE. Either launch (if no overlap) or dissapate
+                // Release BUBBLED. Either launch (if no overlap) or dissapate
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
                 {
@@ -284,6 +284,6 @@ public class Controller : MonoBehaviour, IKillable
     public void Kill()
     {
         var levelManager = GameObject.FindFirstObjectByType<LevelManager>();
-        levelManager.changeLevels(levelManager.currentLevel);
+        levelManager.ChangeLevels(levelManager.currentLevel);
     }
 }

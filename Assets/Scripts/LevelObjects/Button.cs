@@ -13,7 +13,7 @@ public class Button : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.resetGameState += LevelManager_resetGameState;
+        LevelManager.ResetGameState += LevelManager_resetGameState;
     }
 
     private void LevelManager_resetGameState()

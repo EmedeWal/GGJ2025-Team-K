@@ -16,32 +16,32 @@ public class FlyingEnemy : BaseEnemy
     [SerializeField] private float lateralSpeed = 0.8f; // Lateral speed of the enemy
     private float sinCenterY;
 
-    void Start()
+    protected override void Start()
     {
-        Rigidbody = GetComponent<Rigidbody2D>();
+        base.Start();
+
         sinCenterY = transform.position.y;
-        staysOnPlatform = false;
     }
 
     protected new void FixedUpdate()
     {
-        switch (ThisStatus)
+        switch (_CurrentState)
         {
-            case Status.ROAMING:
+            case State.ROAMING:
                     if (CheckWall())
                     {
-                        Direction *= -1;
+                        _Direction *= -1;
                     }
                     SineMovement();
                 break;
-            case Status.BUBBLE:
+            case State.BUBBLED:
                 break;
-            case Status.STUNNED:
-                StunTimer += Time.deltaTime;
-                if (StunTimer >= StunMaxTime)
+            case State.STUNNED:
+                _StunTimer += Time.deltaTime;
+                if (_StunTimer >= _TotalStunTime)
                 {
-                    ThisStatus = Status.ROAMING;
-                    StunTimer = 0f;
+                    _CurrentState = State.ROAMING;
+                    _StunTimer = 0f;
                 }
                 break;
             default:
@@ -55,7 +55,7 @@ public class FlyingEnemy : BaseEnemy
         var pos = transform.position;
 
         // Move in sine wave pattern
-        pos.x += Direction * lateralSpeed * Time.deltaTime;
+        pos.x += _Direction * lateralSpeed * Time.deltaTime;
         float sin = Mathf.Sin(pos.x * curveSpeed) * curveRadius;
         pos.y = sinCenterY + sin;
 

@@ -5,9 +5,9 @@ using System;
 
 public class LevelManager : MonoBehaviour
 {
-    public static event Action resetGameState; //This should be put on every movable object or alterable object so it resets when resetting or changing levels
+    public static event Action ResetGameState; //This should be put on every movable object or alterable object so it resets when resetting or changing levels
 
-    [SerializeField] private CameraController camera;
+    [SerializeField] private CameraController _camera;
     //[SerializeField] private CinemachineCamera cineCamera;
     private Controller player;
 
@@ -25,15 +25,15 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        camera = FindAnyObjectByType<CameraController>();
+        _camera = FindAnyObjectByType<CameraController>();
         //cineCamera = FindAnyObjectByType<CinemachineCamera>();
         player = FindAnyObjectByType<Controller>();
-        changeLevels(1);
+        ChangeLevels(1);
     }
 
     private void OnDisable()
     {
-        resetGameState = null;
+        ResetGameState = null;
     }
 
     private void Update()
@@ -41,53 +41,53 @@ public class LevelManager : MonoBehaviour
         //DEBUG TOOLS to go to the next or previous level
         if (Input.GetKeyDown(KeyCode.O))
         {
-            changeLevels(currentLevel + 1);
+            ChangeLevels(currentLevel + 1);
             Debug.Log("Current Level + 1");
         }
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            changeLevels(currentLevel - 1);
+            ChangeLevels(currentLevel - 1);
             Debug.Log("Current Level - 1");
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            changeLevels(currentLevel);
+            ChangeLevels(currentLevel);
             Debug.Log("Restarted Level");
         }
     }
 
-    public void changeLevels(int newLevel)
+    public void ChangeLevels(int newLevel)
     {
         //This should also be used if the player dies to reset the level
         switch (newLevel)
         {
             case 1:
                 staticCamera = true;
-                camera._levelBounds = bounds1;
-                //camera.transform.position = new Vector3(0.48f, 0, camera.transform.position.z);
+                _camera._levelBounds = bounds1;
+                //_camera.transform.position = new Vector3(0.48f, 0, _camera.transform.position.z);
                 break;
             case 2:
                 staticCamera = true;
-                camera._levelBounds = bounds2;
-                //camera.transform.position = new Vector3(36f, 0, camera.transform.position.z);
+                _camera._levelBounds = bounds2;
+                //_camera.transform.position = new Vector3(36f, 0, _camera.transform.position.z);
                 break;
             case 3:
                 staticCamera = true;
-                camera._levelBounds = bounds3;
-                //camera.transform.position = new Vector3(70f, 0, camera.transform.position.z);
+                _camera._levelBounds = bounds3;
+                //_camera.transform.position = new Vector3(70f, 0, _camera.transform.position.z);
                 break;
             case 4:
                 staticCamera = true;
-                camera._levelBounds = bounds4;
-                //camera.transform.position = new Vector3(105f, 0, camera.transform.position.z);
+                _camera._levelBounds = bounds4;
+                //_camera.transform.position = new Vector3(105f, 0, _camera.transform.position.z);
                 break;
             case 5:
                 staticCamera = false;
-                camera._levelBounds = bounds5;
+                _camera._levelBounds = bounds5;
                 //cineCamera.enabled = true;
                 break;
             case 6:
-                camera._levelBounds = bounds6;
+                _camera._levelBounds = bounds6;
                 break;
             default:
                 break;

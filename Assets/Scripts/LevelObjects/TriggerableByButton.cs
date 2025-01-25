@@ -3,11 +3,11 @@ using UnityEngine;
 public class TriggerableByButton : MonoBehaviour
 {
     [SerializeField] private triggerableType type;
-    private Collider2D collider;
+    private Collider2D _collider;
 
     private void Start()
     {
-        collider = GetComponent<Collider2D>();
+        _collider = GetComponent<Collider2D>();
     }
     public enum triggerableType
     {
@@ -26,7 +26,7 @@ public class TriggerableByButton : MonoBehaviour
                 break;
             case triggerableType.turnsUnsolid:
                 //TODO: Change sprite here
-                collider.enabled = false;
+                _collider.enabled = false;
                 break;
             default:
                 break;
@@ -45,7 +45,7 @@ public class TriggerableByButton : MonoBehaviour
                 break;
             case triggerableType.turnsUnsolid:
                 //TODO: Change sprite here
-                collider.enabled = true;
+                _collider.enabled = true;
                 break;
             default:
                 break;
