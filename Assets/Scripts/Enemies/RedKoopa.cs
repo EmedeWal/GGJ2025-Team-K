@@ -5,45 +5,90 @@ public class RedKoopa : MonoBehaviour, IKillable
     /// <summary>
     /// Enemy that walks left and right, but will not voluntarily drop off the platform it is on
     /// Could also be made so it can ignore ledges and just walk left and right but don't know if we'll use that
+    /// 
+    /// Needs to have an enemy spawner set in editor if hasSpawner is true
     /// </summary>
 
     private Rigidbody2D _rigibody;
+    public EnemySpawner _spawner;
 
-    private float speed;
-    private float direction;
+    public bool hasSpawner = false;
+    [SerializeField] private int enemyId = 0; //Used to match this enemy to a corresponding spawner
+    private bool staysOnPlatform = true; //If false, skips the check to turn around at edges
 
-    
+    private float acceleration = 0.1f;
+    private float currentSpeed = 0f;
+    private float maxSpeed = 3f;
+    private float direction = -1; //1 for left, -1 for right
+
+    [SerializeField] private bool die = false;
+
     [SerializeField] private string status = "roaming"; //roaming means walking around, bubble means in a bubble (so doing nothing), stunned means right after being released from a bubble it cannot move for a bit
 
     void Start()
     {
-        
+        _rigibody = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
     {
-        
+        switch (status)
+        {
+            case "roaming":
+                if (staysOnPlatform)
+                {
+                    if (CheckEdge() || CheckWall()) //About to fall off platform  
+                    {
+                        Debug.Log("hit wall/edge");
+                        direction *= -1;
+                        currentSpeed = 0f;
+                    }
+                }
+                currentSpeed = Mathf.Clamp(currentSpeed + acceleration, 0, maxSpeed);
+                _rigibody.linearVelocity = new Vector2(currentSpeed * direction, _rigibody.linearVelocity.y);
+                break;
+            case "bubble":
+                break;
+            case "stunned":
+            default:
+                break;
+        }
+        if (die)
+        {
+            Death();
+        }
     }
 
     // It can do a lil death animation maybe, like falling down off-the-screen while spinning to keep it simple. In any case, it dies
     public void Death()
     {
+        Destroy(gameObject);
 
+        /*
+        //Was trying to do a death animation, wasn't working so shelving this for now
+        status = "stunned";
+        GetComponent<Collider2D>().enabled = false;
+        _rigibody.linearVelocity = new Vector2(0, _rigibody.linearVelocity.y);
+        _rigibody.AddForce(new Vector2(0, 50f));
+        */
     }
 
-    void CheckEdge()
+    //Returns true if the enemy is about to drop off an edge
+    bool CheckEdge()
     {
-        var origin = _rigibody.position + _rigibody.linearVelocity.normalized;
+        var pos = _rigibody.position;
+        pos.x += direction;
         var dir = Vector2.down;
+        //Debug.DrawRay(pos, dir, Color.red, 50f);
+        return !Physics2D.Raycast(pos, dir, dir.magnitude, LayerMask.GetMask("Ground"));
+    }
 
-        if (Physics2D.Raycast(origin, dir, 2f, LayerMask.GetMask(" Ground")))
-        {
-
-        }
-        else
-        {
-
-        }
+    bool CheckWall()
+    {
+        var origin = _rigibody.position;
+        var dir = new Vector2(direction,0);
+        //Debug.DrawRay(origin, dir, Color.blue, 50f);
+        return Physics2D.Raycast(origin, dir, dir.magnitude, LayerMask.GetMask("Ground")); //dir.magnitude
     }
 
     void IKillable.OnSpikeHit()
