@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 2622248253314250229}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.43, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4408883870261727346}
@@ -115,7 +115,7 @@ MonoBehaviour:
   _explosionRadius: 4
   _lifeTime: 2
   _movementForce: 10
-  _movementIntensity: 2
+  _movementIntensity: 0.2
   _movementFrequency: 4
   _floatVelocity: 6
   _floatIntensity: 0.5

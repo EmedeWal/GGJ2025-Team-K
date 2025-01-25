@@ -138,6 +138,6 @@ namespace Bubble
             Destroy(gameObject);
         }
 
-        public void OnSpikeHit() => Pop(release: false, explode: true);
+        public void Kill() => Pop(release: false, explode: true);
     }
 }

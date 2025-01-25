@@ -173,11 +173,12 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
-    public void OnSpikeHit()
+    public void Kill()
     {
 
     }
 
+    // Probably do particles instead of color lerping?
     //private IEnumerator ColorCoroutine(Color color, float duration)
     //{
     //    _spriteRenderer.color = color;
