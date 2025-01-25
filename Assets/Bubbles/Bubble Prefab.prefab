@@ -115,7 +115,7 @@ MonoBehaviour:
   _explosionRadius: 4
   _lifeTime: 2
   _movementForce: 10
-  _movementIntensity: 2
+  _movementIntensity: 0.2
   _movementFrequency: 4
   _floatVelocity: 6
   _floatIntensity: 0.5
