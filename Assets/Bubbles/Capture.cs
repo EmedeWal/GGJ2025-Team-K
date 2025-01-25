@@ -1,9 +1,11 @@
 namespace Bubble
 {
     using UnityEngine;
+    using System;
 
     public struct CaptureStruct
     {
+        public BaseEnemy Enemy;
         public Transform Transform;
         public Collider2D Collider;
         public Rigidbody2D Rigidbody;
@@ -18,9 +20,16 @@ namespace Bubble
 
         private CaptureStruct _struct;
 
+        public event Action Captured;
+
         public Capture(float alpha)
         {
             _alpha = alpha;
+        }
+
+        public void Cleanup()
+        {
+            Captured = null;
         }
 
         public void Follow()
@@ -28,10 +37,11 @@ namespace Bubble
             _struct.Transform.localPosition = Vector2.zero;
         }
 
-        public void CaptureObject(Transform thisTransform, Transform capturedTransform)
+        public void OnCaptured(Transform thisTransform, Transform capturedTransform)
         {
             _struct = new()
             {
+                Enemy = capturedTransform.GetComponent<BaseEnemy>(),
                 Transform = capturedTransform,
                 Collider = capturedTransform.GetComponent<Collider2D>(),
                 Rigidbody = capturedTransform.GetComponent<Rigidbody2D>(),
@@ -44,16 +54,28 @@ namespace Bubble
             _struct.Transform.localPosition = Vector2.zero;
             _struct.Collider.enabled = false;
             _struct.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+
+            if (_struct.Enemy)
+                _struct.Enemy.ThisStatus = BaseEnemy.Status.bubble;
+
+            Captured?.Invoke();
         }
 
-        public void ReleaseObject()
+        public void OnReleased()
         {
             ChangeCapturedObjectAlpha(1);
 
+            var isEnemy = _struct.Enemy;
+            if (isEnemy)
+                _struct.Enemy.ThisStatus = BaseEnemy.Status.stunned;
+
             _struct.Transform.SetParent(null);
             _struct.Collider.enabled = true;
-            _struct.Rigidbody.constraints = RigidbodyConstraints2D.None;
             _struct.Transform = null;
+
+            var constraints = isEnemy
+                ? RigidbodyConstraints2D.FreezeRotation
+                : RigidbodyConstraints2D.None;
         }
 
         private void ChangeCapturedObjectAlpha(float alpha)

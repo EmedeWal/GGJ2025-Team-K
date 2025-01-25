@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Controller : MonoBehaviour
+public class Controller : MonoBehaviour, IKillable
 {
     public Rigidbody2D Rigidbody => _rigidbody;
 
@@ -45,6 +45,8 @@ public class Controller : MonoBehaviour
     private float _timeSinceGrounded = 0;
     private float _timeSinceJumpRequest = 0;
     private bool _requestedJumpCut = false;
+
+    private bool _locked = false;
 
     private void Start()
     {
@@ -165,27 +167,32 @@ public class Controller : MonoBehaviour
 
     private bool PerformGroundCheck()
     {
-        (var origin, var size) = GetGroundCheckSizes();
-        return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
-    }
-
-    private (Vector2 origin, Vector2 size) GetGroundCheckSizes()
-    {
         var origin = _boxCollider.bounds.center;
         origin.y -= _boxCollider.bounds.extents.y;
         var size = new Vector2(_boxCollider.size.x * 0.8f, _groundCheckSize);
-
-        return (origin, size);
+        return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
-    private void OnDrawGizmos()
+    public void OnSpikeHit()
     {
-        if (_boxCollider)
-        {
-            (var origin, var size) = GetGroundCheckSizes();
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawCube(origin, size);
-        }
     }
+
+    //private IEnumerator ColorCoroutine(Color color, float duration)
+    //{
+    //    _spriteRenderer.color = color;
+    //    float time = 0;
+
+    //    while (time < duration)
+    //    {
+    //        time += _deltaTime;
+
+    //        float transitionTime = time / duration;
+    //        _spriteRenderer.color = Color.Lerp(color, _originalColor, transitionTime);
+
+    //        yield return null;
+    //    }
+
+    //    _spriteRenderer.color = _originalColor;
+    //}
 }
