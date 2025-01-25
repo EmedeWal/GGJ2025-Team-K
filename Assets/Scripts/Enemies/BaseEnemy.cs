@@ -147,7 +147,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
         }
     }
 
-    void IKillable.Kill()
+    void IKillable.OnSpikeHit()
     {
         Death();
     }

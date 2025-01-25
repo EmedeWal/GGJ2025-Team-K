@@ -11,12 +11,12 @@ public class Spikes : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out IKillable killable))
         {
-            killable.Kill();
+            killable.OnSpikeHit();
         }
     }
 }
 
 public interface IKillable
 {
-    public void Kill();
+    public void OnSpikeHit();
 }

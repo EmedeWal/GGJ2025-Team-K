@@ -173,13 +173,11 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
-    public void Kill()
+    public void OnSpikeHit()
     {
-        Debug.Log("Player death");
+
     }
 
-    
-    // For turning red on death or something, but perhaps playing a particle is better
     //private IEnumerator ColorCoroutine(Color color, float duration)
     //{
     //    _spriteRenderer.color = color;
