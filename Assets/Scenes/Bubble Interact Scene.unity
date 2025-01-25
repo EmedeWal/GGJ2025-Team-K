@@ -181,7 +181,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 25
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -543,6 +543,10 @@ PrefabInstance:
       propertyPath: _lifeTime
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _movementIntensity
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1869522659707607548, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
     m_RemovedGameObjects: []
@@ -563,7 +567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470022496301782058, guid: 8caf8013bf68b6b45acc202fc522030c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -7.66
       objectReference: {fileID: 0}
     - target: {fileID: 5470022496301782058, guid: 8caf8013bf68b6b45acc202fc522030c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -619,17 +623,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1866573124742260928, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _transparency
-      value: 0.686
-      objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.05
+      value: -6.22
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.47
+      value: 1.48
       objectReference: {fileID: 0}
     - target: {fileID: 2429974371237828060, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -667,32 +667,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: BubblePrefab
       objectReference: {fileID: 0}
-    - target: {fileID: 2622248253314250229, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _charge
+      propertyPath: _floatSlowdown
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _lifeTime
-      value: 3
+      propertyPath: _floatVelocity
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _initialForce
-      value: 20
+      propertyPath: _floatFrequency
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _explosionForce
-      value: 20
+      propertyPath: _floatIntensity
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6943317190728886155, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
-      propertyPath: _explosionRadius
-      value: 5
+    - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _floatVelocity
+      value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1869522659707607548, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+    - target: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+      propertyPath: _movementIntensity
+      value: 0.2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

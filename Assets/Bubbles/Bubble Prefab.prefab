@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2429974371237828060}
   - component: {fileID: 7982792370176525292}
   - component: {fileID: 6756571788065867183}
-  - component: {fileID: 6943317190728886155}
+  - component: {fileID: 8528591839690104982}
   m_Layer: 8
   m_Name: Bubble Prefab
   m_TagString: Untagged
@@ -48,8 +48,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 10
-  m_AngularDamping: 10
+  m_LinearDamping: 0
+  m_AngularDamping: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -98,7 +98,7 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
---- !u!114 &6943317190728886155
+--- !u!114 &8528591839690104982
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,13 +111,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _charge: 1
-  _mass: 1
   _explosionForce: 20
-  _explosionRadius: 5
-  _lifeTime: 7
-  _initialForce: 20
-  _intensity: 0.3
-  _frequency: 15
+  _explosionRadius: 4
+  _lifeTime: 2
+  _movementForce: 10
+  _movementIntensity: 2
+  _movementFrequency: 4
+  _floatVelocity: 6
+  _floatIntensity: 0.5
+  _floatFrequency: 2
+  _floatSlowdown: 2
   _transparency: 0.5
 --- !u!1 &7309242600320845641
 GameObject:

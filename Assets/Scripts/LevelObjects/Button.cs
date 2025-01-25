@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Button : MonoBehaviour
 {
@@ -6,15 +7,8 @@ public class Button : MonoBehaviour
     [SerializeField] private GameObject _pressedObject;
     [SerializeField] private bool _isPressed = false;
     [SerializeField] private bool _playerCanPress = false;
-    void Start()
-    {
 
-    }
-
-    void Update()
-    {
-        
-    }
+    [SerializeField] private List<TriggerableByButton> triggers;
 
     void OnTriggerEnter2D(Collider2D collider)
     {
@@ -28,6 +22,10 @@ public class Button : MonoBehaviour
             var pos = _pressedObject.transform.position;
             pos.y -= 0.17f;
             _pressedObject.transform.position = pos;
+            foreach (var x in triggers)
+            {
+                x._onButtonPress();
+            }
         }
     }
 
@@ -44,6 +42,10 @@ public class Button : MonoBehaviour
             var pos = _pressedObject.transform.position;
             pos.y += 0.17f;
             _pressedObject.transform.position = pos;
+            foreach (var x in triggers)
+            {
+                x._onButtonRelease();
+            }
         }
     }
 }
