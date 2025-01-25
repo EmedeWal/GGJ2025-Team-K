@@ -49,8 +49,11 @@ public class Attributes : MonoBehaviour
     void LerpSpriteToHealth()
     {
         var currentScale = _playerAirBubble.transform.localScale.x;
-        var newScale = _health / _maxHealth;        
-        var scale = Mathf.Lerp(currentScale, newScale, _airLerpScalar * Time.deltaTime);
+        var newScale = _health / _maxHealth;
+
+        var response = 1f - Mathf.Exp(-_airLerpScalar * Time.deltaTime);
+        var scale = Mathf.Lerp(currentScale, newScale, response);
+
         _playerAirBubble.transform.localScale = new Vector3(scale, scale, 0);
     }
 }
