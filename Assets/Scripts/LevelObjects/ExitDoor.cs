@@ -7,6 +7,7 @@ public class ExitDoor : MonoBehaviour
     public bool unlocked = false;
     [SerializeField] private doorType type = doorType.unlocked;
 
+    private int startingEnemies;
     public int enemiesLeft = 3;
     [SerializeField] private List<GameObject> enemies;
 
@@ -19,6 +20,7 @@ public class ExitDoor : MonoBehaviour
 
     void Start()
     {
+        startingEnemies = enemiesLeft;
         manager = FindAnyObjectByType<LevelManager>();
     }
 
@@ -37,6 +39,7 @@ public class ExitDoor : MonoBehaviour
             {
                 unlocked = true;
             }
+            enemiesLeft = startingEnemies;
         }
     }
 
