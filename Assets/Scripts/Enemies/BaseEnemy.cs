@@ -81,7 +81,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     protected virtual void FixedUpdate()
     {
-        print(staysOnPlatform);
         switch (thisStatus)
         {
             case Status.roaming:
@@ -89,7 +88,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
                 {
                     if (CheckEdge() || CheckWall()) //About to fall off platform  
                     {
-                        Debug.Log("hit wall/edge");
                         direction *= -1;
                         currentSpeed = 0f;
                     }

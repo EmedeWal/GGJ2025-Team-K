@@ -26,8 +26,8 @@ Transform:
   m_GameObject: {fileID: 1157744179895956879}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.006, y: 1.4734, z: 0}
-  m_LocalScale: {x: 0.14637679, y: 0.16029292, z: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4042369407215574813}
@@ -306,8 +306,10 @@ MonoBehaviour:
   _airMultiplier: 0.4
   _jumpCutMultiplier: 0.6
   _jumpForce: 20
-  _defaultGravity: 3
-  _gravityIncrement: 0.03
+  _defaultGravity: 2
+  _gravityIncrement: 0.02
+  _bubblePrefab: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
+  _spawnOffset: 1
   _groundCheckSize: 0.2
 --- !u!114 &5800913847116688199
 MonoBehaviour:
@@ -322,4 +324,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
-  _playerAirBubble: {fileID: 1157744179895956879}
+  _playerAirBubble: {fileID: 8339777808591014633}
+  _lerpSpeed: 1

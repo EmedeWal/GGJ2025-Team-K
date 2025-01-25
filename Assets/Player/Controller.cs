@@ -123,8 +123,10 @@ public class Controller : MonoBehaviour, IKillable
     private void HandleTurns(Vector2 mouseWorldPos)
     {
         var cursorX = mouseWorldPos.x;
+        var playerX = _rigidbody.position.x;
         var localScale = transform.localScale;
-        if (localScale.x > 0 && cursorX < 0 || localScale.x < 0 && cursorX > 0)
+
+        if (localScale.x > 0 && cursorX < playerX || localScale.x < 0 && cursorX > playerX)
         {
             localScale.x *= -1;
             transform.localScale = localScale;

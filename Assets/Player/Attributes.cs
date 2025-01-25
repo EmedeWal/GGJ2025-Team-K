@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Attributes : MonoBehaviour
@@ -6,11 +5,15 @@ public class Attributes : MonoBehaviour
     [SerializeField] private float _maxHealth;
     private float _health;
     private float _prevHealth;
-    [SerializeField] private GameObject _playerAirBubble;
+    [SerializeField] private Transform _playerAirBubble;
+    [SerializeField] private float _lerpSpeed = 1f;
     private SpriteRenderer _playerAirBubbleSprite;
+    private float _originalScale;
+
     void Start()
     {
-        // _playerAirBubbleSprite = _playerAirBubble.GetComponentInChildren<SpriteRenderer>();
+        _originalScale = ((Vector2)_playerAirBubble.localScale).magnitude;
+
         _health = _maxHealth;
         _prevHealth = _health;
     }
@@ -46,10 +49,11 @@ public class Attributes : MonoBehaviour
 
     void LerpSpriteToHealth()
     {
-        var currentScale = _playerAirBubble.transform.localScale.x;
-        var newScale = _health / _maxHealth;        
-        // var response = 1f - Mathf.Exp(-5f * Time.deltaTime);
-        var scale = Mathf.Lerp(currentScale, newScale, 0.1f);
-        _playerAirBubble.transform.localScale = new Vector3(scale, scale, 0);
+        var currentScale = _playerAirBubble.localScale.x;
+        var newScale = _health / _maxHealth * _originalScale;       
+        
+        var response = 1f - Mathf.Exp(-_lerpSpeed * Time.deltaTime);
+        var scale = Mathf.Lerp(currentScale, newScale, response);
+        _playerAirBubble.localScale = new Vector3(scale, scale, 0);
     }
 }
