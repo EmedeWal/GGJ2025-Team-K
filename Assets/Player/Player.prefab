@@ -186,7 +186,6 @@ GameObject:
   - component: {fileID: 7989135065547511408}
   - component: {fileID: 9184391589670944505}
   - component: {fileID: 8269393365371642189}
-  - component: {fileID: 5800913847116688199}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -308,21 +307,10 @@ MonoBehaviour:
   _jumpForce: 20
   _defaultGravity: 2
   _gravityIncrement: 0.02
+  _bubbleCheckSize: 0.5
+  _groundCheckSize: 0.2
   _bubblePrefab: {fileID: 8528591839690104982, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
   _spawnOffset: 1
-  _groundCheckSize: 0.2
---- !u!114 &5800913847116688199
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8164215543627391361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 828ad719275e4cb4e9b0f9dcec0f1548, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _airBubbleTransform: {fileID: 0}
   _maxHealth: 100
-  _playerAirBubble: {fileID: 8339777808591014633}
-  _lerpSpeed: 1
+  _bubbleResponse: 1

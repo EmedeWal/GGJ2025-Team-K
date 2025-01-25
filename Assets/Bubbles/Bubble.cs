@@ -20,6 +20,8 @@ namespace Bubbles
 
     public class Bubble : MonoBehaviour, IKillable
     {
+        public int Volume { get; private set; }
+
         [Header("SETTINGS")]
 
         [Space]
@@ -69,11 +71,14 @@ namespace Bubbles
 
         public void Charge(float charge)
         {
+            Volume = Mathf.CeilToInt(charge * 10);
             _transform.localScale = new Vector3(charge, charge, 1);
         }
 
         public void Launch(float charge)
         {
+            Volume = Mathf.CeilToInt(charge * 10);
+
             _rigidbody = GetComponent<Rigidbody2D>();
             Utils.SetRigidbody(_rigidbody);
             _rigidbody.gravityScale = 0f;
@@ -141,9 +146,10 @@ namespace Bubbles
             if (!_capture.HasCapture && collision.gameObject.CompareTag("Capturable"))
                 _capture.OnCaptured(_transform, collision.transform);
             else if (collision.transform.TryGetComponent(out Controller controller))
-                Pop(release: true, explode: controller.Rigidbody.linearVelocity.y < 0);
-            else
-                Pop(release: true, explode: true);
+            {
+                var explode = controller.Rigidbody.linearVelocity.y < 0;
+                Pop(release: true, explode: explode);
+            }
         }
 
         public void Pop(bool release, bool explode)

@@ -35,14 +35,22 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private float _gravityIncrement = 0.03f;
 
     [Space]
-    [Header("Bubbles")]
-    [SerializeField] private Bubble _bubblePrefab;
-    [SerializeField] private float _spawnOffset = 1f;
-
-    [Space]
     [Header("Other")]
     [SerializeField] private float _bubbleCheckSize = 0.5f;
     [SerializeField] private float _groundCheckSize = 0.2f;
+
+    [Header("BUBBLES")]
+
+    [Space]
+    [Header("Shooting")]
+    [SerializeField] private Bubble _bubblePrefab;
+    [SerializeField] private float _spawnOffset = 2.4f;
+
+    [Space]
+    [Header("Resources")]
+    [SerializeField] private Transform _airBubbleTransform;
+    [SerializeField] private int _maxHealth = 100;
+    [SerializeField] private float _bubbleResponse = 1f;
 
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
@@ -50,6 +58,7 @@ public class Controller : MonoBehaviour, IKillable
     private LayerMask _bubbleLayers;
 
     private BubbleStruct _bubbleStruct;
+    private CustomCursor _customCursor;
     private Camera _mainCamera;
 
     private int _requestedMovement = 0;
@@ -68,6 +77,7 @@ public class Controller : MonoBehaviour, IKillable
         _groundLayers = LayerMask.GetMask("Ground");
         _bubbleLayers = LayerMask.GetMask("Bubble");
 
+        _customCursor = FindFirstObjectByType<CustomCursor>();
         _mainCamera = Camera.main;
 
         Utils.SetRigidbody(_rigidbody);
@@ -96,8 +106,11 @@ public class Controller : MonoBehaviour, IKillable
         }
 
         var mouseWorldPos = (Vector2)_mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var hit = Physics2D.OverlapCircle(mouseWorldPos, _bubbleCheckSize, _bubbleLayers);
+        _customCursor.UpdateColorAndPosition(hit, _bubbleStruct.Bubble);
+
         HandleTurns(mouseWorldPos);
-        HandleShooting(mouseWorldPos, Time.fixedDeltaTime);
+        HandleShooting(hit, mouseWorldPos, Time.fixedDeltaTime);
 
         HorizontalMovement(grounded);
         VerticalMovement(grounded);
@@ -136,18 +149,13 @@ public class Controller : MonoBehaviour, IKillable
         }
     }
 
-    private void HandleShooting(Vector2 mouseWorldPos, float deltaTime)
+    private void HandleShooting(Collider2D hit, Vector2 mouseWorldPos, float deltaTime)
     {
         // Calculate dir towards mouth
         var playerPos = _rigidbody.position;
         playerPos.y += _boxCollider.bounds.extents.y;
         var direction = (mouseWorldPos - playerPos).normalized;
-
-        // Calculate spawn offset, further away if more charged
-        var spawnOffset = _bubbleStruct.Bubble
-            ? _spawnOffset // + _bubbleStruct.Charge
-            : _spawnOffset;
-        var spawnPosition = playerPos + direction * spawnOffset;
+        var spawnPosition = playerPos + direction * _spawnOffset;
 
         if (_bubbleStruct.Bubble)
         { 
@@ -159,9 +167,11 @@ public class Controller : MonoBehaviour, IKillable
             // Maintain bubble
             if (_requestedSustainedShoot)
             {
+                var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                var clampedAngle = Mathf.Clamp(angle, -30f, 60f);
+
                 _bubbleStruct.Bubble.Charge(charge);
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                _bubbleStruct.Transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, 0, angle));
+                _bubbleStruct.Transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, 0, clampedAngle));
             }
             else
             {
@@ -179,8 +189,6 @@ public class Controller : MonoBehaviour, IKillable
         }
         else if (_requestedShoot)
         {
-            // if raycasts from mouse to thing hits a popBubble, pop the popBubble 
-            var hit = Physics2D.OverlapCircle(mouseWorldPos, _bubbleCheckSize, _bubbleLayers);
             if (hit && hit.transform.TryGetComponent(out Bubble popBubble))
                 popBubble.Pop(release: true, explode: true);
             else
