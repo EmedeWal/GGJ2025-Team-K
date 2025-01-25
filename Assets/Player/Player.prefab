@@ -323,4 +323,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 100
   _playerAirBubble: {fileID: 1157744179895956879}
-  _airLerpScalar: 0.403
