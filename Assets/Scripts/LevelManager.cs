@@ -1,9 +1,12 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
+using System;
 
 public class LevelManager : MonoBehaviour
 {
+    public static event Action resetGameState;
+
     [SerializeField] private Camera camera;
     [SerializeField] private CinemachineCamera cineCamera;
     private Controller player;
@@ -19,6 +22,11 @@ public class LevelManager : MonoBehaviour
         cineCamera = FindAnyObjectByType<CinemachineCamera>();
         player = FindAnyObjectByType<Controller>();
         changeLevels(1);
+    }
+
+    private void OnDisable()
+    {
+        resetGameState = null;
     }
 
     private void Update()
