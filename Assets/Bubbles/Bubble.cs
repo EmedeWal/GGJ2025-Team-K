@@ -116,11 +116,7 @@ namespace Bubble
             if (!_capture.HasCapture && collision.gameObject.CompareTag("Capturable"))
                 _capture.OnCaptured(_transform, collision.transform);
             else if (collision.transform.TryGetComponent(out Controller controller))
-            {
-                collision.transform.TryGetComponent<Attributes>(out var attributes);
-                attributes.AddHealth(10 * _charge);
                 Pop(release: true, explode: controller.Rigidbody.linearVelocity.y < 0);
-            }
             else
                 Pop(release: true, explode: true);
         }
