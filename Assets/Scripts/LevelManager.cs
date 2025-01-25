@@ -7,8 +7,8 @@ public class LevelManager : MonoBehaviour
 {
     public static event Action resetGameState; //This should be put on every movable object or alterable object so it resets when resetting or changing levels
 
-    [SerializeField] private Camera camera;
-    [SerializeField] private CinemachineCamera cineCamera;
+    [SerializeField] private CameraController camera;
+    //[SerializeField] private CinemachineCamera cineCamera;
     private Controller player;
 
     public int currentLevel = 1;
@@ -16,10 +16,17 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> playerSpawns;
 
+    [SerializeField] private Collider2D bounds1;
+    [SerializeField] private Collider2D bounds2;
+    [SerializeField] private Collider2D bounds3;
+    [SerializeField] private Collider2D bounds4;
+    [SerializeField] private Collider2D bounds5;
+    [SerializeField] private Collider2D bounds6;
+
     void Start()
     {
-        camera = FindAnyObjectByType<Camera>();
-        cineCamera = FindAnyObjectByType<CinemachineCamera>();
+        camera = FindAnyObjectByType<CameraController>();
+        //cineCamera = FindAnyObjectByType<CinemachineCamera>();
         player = FindAnyObjectByType<Controller>();
         changeLevels(1);
     }
@@ -51,27 +58,31 @@ public class LevelManager : MonoBehaviour
         {
             case 1:
                 staticCamera = true;
-                cineCamera.enabled = false;
-                camera.transform.position = new Vector3(0.48f, 0, camera.transform.position.z);
+                camera._levelBounds = bounds1;
+                //camera.transform.position = new Vector3(0.48f, 0, camera.transform.position.z);
                 break;
             case 2:
                 staticCamera = true;
-                cineCamera.enabled = false;
-                camera.transform.position = new Vector3(36f, 0, camera.transform.position.z);
+                camera._levelBounds = bounds2;
+                //camera.transform.position = new Vector3(36f, 0, camera.transform.position.z);
                 break;
             case 3:
                 staticCamera = true;
-                cineCamera.enabled = false;
-                camera.transform.position = new Vector3(70f, 0, camera.transform.position.z);
+                camera._levelBounds = bounds3;
+                //camera.transform.position = new Vector3(70f, 0, camera.transform.position.z);
                 break;
             case 4:
                 staticCamera = true;
-                cineCamera.enabled = false;
-                camera.transform.position = new Vector3(105f, 0, camera.transform.position.z);
+                camera._levelBounds = bounds4;
+                //camera.transform.position = new Vector3(105f, 0, camera.transform.position.z);
                 break;
             case 5:
                 staticCamera = false;
-                cineCamera.enabled = true;
+                camera._levelBounds = bounds5;
+                //cineCamera.enabled = true;
+                break;
+            case 6:
+                camera._levelBounds = bounds6;
                 break;
             default:
                 break;

@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [Header("LEVEL BOUNDS")]
-    [SerializeField] private BoxCollider2D _levelBounds;
+    public Collider2D _levelBounds;
 
     [Header("FOLLOW SETTINGS")]
     [SerializeField] private float _smoothSpeed = 5f;
