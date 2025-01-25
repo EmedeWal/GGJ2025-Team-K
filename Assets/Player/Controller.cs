@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Controller : MonoBehaviour
 {
+    public Rigidbody2D Rigidbody => _rigidbody;
+
     [Header("SETTINGS")]
 
     [Space]
