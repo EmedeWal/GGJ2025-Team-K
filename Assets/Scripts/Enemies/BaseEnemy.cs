@@ -61,6 +61,19 @@ public class BaseEnemy : MonoBehaviour, IKillable
         get => thisStatus;
         set => thisStatus = value;
     }
+    [SerializeField] private float stunMaxTime = 1f;
+    [HideInInspector] public float StunMaxTime
+    {
+        get => stunMaxTime;
+        set => stunMaxTime = value;
+    }
+    [SerializeField] private float stunTimer = 0f;
+    [HideInInspector] public float StunTimer
+    {
+        get => stunTimer;
+        set => stunTimer = value;
+    }
+
 
     void Start()
     {
@@ -87,6 +100,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
             case Status.bubble:
                 break;
             case Status.stunned:
+                HandleStuns();
                 break;
             default:
                 break;
@@ -118,6 +132,20 @@ public class BaseEnemy : MonoBehaviour, IKillable
     public void Death()
     {
         Destroy(gameObject);
+    }
+
+    public void HandleStuns()
+    {
+        if (_rigidbody.linearVelocity.y < 0)
+        {
+            return;
+        }
+        stunTimer += Time.deltaTime;
+        if (stunTimer >= stunMaxTime)
+        {
+            thisStatus = Status.roaming;
+            stunTimer = 0f;
+        }
     }
 
     void IKillable.OnSpikeHit()
