@@ -171,7 +171,7 @@ public class Controller : MonoBehaviour, IKillable
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
             var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
 
-            // Maintain bubble
+            // Maintain BUBBLE
             if (_requestedSustainedShoot)
             {
                 // Restrict downward aiming by clamping within allowed regions
@@ -182,7 +182,7 @@ public class Controller : MonoBehaviour, IKillable
             }
             else
             {
-                // Release bubble. Either launch (if no overlap) or dissapate
+                // Release BUBBLE. Either launch (if no overlap) or dissapate
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
                 {

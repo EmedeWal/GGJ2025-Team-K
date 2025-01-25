@@ -1,5 +1,12 @@
 using UnityEngine;
 
+public enum Status
+{
+    ROAMING,
+    BUBBLE,
+    STUNNED
+}
+
 public class BaseEnemy : MonoBehaviour, IKillable
 {
     private Rigidbody2D _rigidbody;
@@ -49,17 +56,11 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     [HideInInspector] public bool die = false;
 
-    public enum Status
-    {
-        roaming,
-        bubble,
-        stunned
-    }
-    [SerializeField] private Status thisStatus = Status.roaming;
+    [SerializeField] private Status _currentState = Status.ROAMING;
     [HideInInspector] public Status ThisStatus
     {
-        get => thisStatus;
-        set => thisStatus = value;
+        get => _currentState;
+        set => _currentState = value;
     }
     [SerializeField] private float stunMaxTime = 1f;
     [HideInInspector] public float StunMaxTime
@@ -74,98 +75,78 @@ public class BaseEnemy : MonoBehaviour, IKillable
         set => stunTimer = value;
     }
 
-    [HideInInspector] public Vector2 startPos
-    {
-        get => startPos;
-        set => startPos = value;
-    }
+    private SpriteRenderer _spriteRenderer;
+    private LayerMask _groundLayers;
+    private Vector2 _startPosition;
 
-    void Start()
+    private void Start()
     {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _groundLayers = LayerMask.GetMask("Ground");
+        _startPosition = transform.position;
+
         if (direction == -1)
-        {
-            GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
-        }
-        startPos = transform.position;
-        LevelManager.resetGameState += LevelManager_resetGameState;
-    }
+            _spriteRenderer.flipY = !_spriteRenderer.flipY;
 
-    private void LevelManager_resetGameState()
-    {
-        transform.position = startPos;
+        LevelManager.resetGameState += LevelManager_resetGameState;
     }
 
     protected virtual void FixedUpdate()
     {
-        switch (thisStatus)
+        switch (_currentState)
         {
-            case Status.roaming:
-                if (staysOnPlatform)
+            case Status.ROAMING:
+                if ((staysOnPlatform && CheckEdge()) || CheckWall()) 
                 {
-                    if (CheckEdge() || CheckWall()) //About to fall off platform  
-                    {
-                        direction *= -1;
-                        currentSpeed = 0f;
-                        GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
-                    }
+                    direction *= -1;
+                    currentSpeed = 0f;
+                    _spriteRenderer.flipY = !_spriteRenderer.flipY;
                 }
                 currentSpeed = Mathf.Clamp(currentSpeed + acceleration, 0, MaxSpeed);
                 _rigidbody.linearVelocity = new Vector2(currentSpeed * direction, _rigidbody.linearVelocity.y);
                 break;
-            case Status.bubble:
+            case Status.BUBBLE:
                 break;
-            case Status.stunned:
+            case Status.STUNNED:
                 HandleStuns();
                 break;
             default:
                 break;
         }
-        if (die)
-        {
-            Death();
-        }
-
     }
 
-    public bool CheckEdge()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        var pos = _rigidbody.position;
-        pos.x += direction;
-        var dir = Vector2.down;
-        //Debug.DrawRay(pos, dir, Color.red, 50f);
-        return !Physics2D.Raycast(pos, dir, dir.magnitude, LayerMask.GetMask("Ground"));
+        if (collision.transform.TryGetComponent(out Controller controller))
+            controller.Kill();
     }
 
-    public bool CheckWall()
-    {
-        var origin = _rigidbody.position;
-        var dir = new Vector2(direction,0);
-        //Debug.DrawRay(origin, dir, Color.blue, 50f);
-        return Physics2D.Raycast(origin, dir, dir.magnitude, LayerMask.GetMask("Ground")); //dir.magnitude
-    }
+    private void LevelManager_resetGameState() => transform.position = _startPosition;
 
-    public void Death()
+    protected void HandleStuns()
     {
-        Destroy(gameObject);
-    }
-
-    public void HandleStuns()
-    {
-        if (_rigidbody.linearVelocity.y < 0)
-        {
-            return;
-        }
         stunTimer += Time.deltaTime;
         if (stunTimer >= stunMaxTime)
         {
-            thisStatus = Status.roaming;
+            _currentState = Status.ROAMING;
             stunTimer = 0f;
         }
     }
 
-    void IKillable.Kill()
+    protected bool CheckEdge()
     {
-        Death();
+        var pos = _rigidbody.position;
+        pos.x += direction;
+        var dir = Vector2.down;
+        return !Physics2D.Raycast(pos, dir, dir.magnitude, _groundLayers);
     }
 
+    protected bool CheckWall()
+    {
+        var origin = _rigidbody.position;
+        var dir = new Vector2(direction, 0);
+        return Physics2D.Raycast(origin, dir, dir.magnitude, _groundLayers);
+    }
+
+    public void Kill() => Destroy(gameObject);
 }

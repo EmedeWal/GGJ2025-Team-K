@@ -20,7 +20,7 @@ public class ShootingEnemy : BaseEnemy
         base.FixedUpdate();
         switch (ThisStatus)
         {
-            case Status.roaming:
+            case Status.ROAMING:
                 fireTimer += Time.deltaTime;
                 if (fireTimer >= fireRate)
                 {
@@ -28,9 +28,9 @@ public class ShootingEnemy : BaseEnemy
                     fireTimer = 0;
                 }
                 break;
-            case Status.bubble:
+            case Status.BUBBLE:
                 break;
-            case Status.stunned:
+            case Status.STUNNED:
                 break;
             default:
                 break;

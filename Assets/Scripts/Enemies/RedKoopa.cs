@@ -27,7 +27,7 @@ public class RedKoopa : BaseEnemy
 
     //     /*
     //     //Was trying to do a death animation, wasn't working so shelving this for now
-    //     status = "stunned";
+    //     status = "STUNNED";
     //     GetComponent<Collider2D>().enabled = false;
     //     Rigidbody.linearVelocity = new Vector2(0, Rigidbody.linearVelocity.y);
     //     Rigidbody.AddForce(new Vector2(0, 50f));

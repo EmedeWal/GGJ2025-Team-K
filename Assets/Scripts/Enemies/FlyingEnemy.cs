@@ -27,20 +27,20 @@ public class FlyingEnemy : BaseEnemy
     {
         switch (ThisStatus)
         {
-            case Status.roaming:
+            case Status.ROAMING:
                     if (CheckWall())
                     {
                         Direction *= -1;
                     }
                     SineMovement();
                 break;
-            case Status.bubble:
+            case Status.BUBBLE:
                 break;
-            case Status.stunned:
+            case Status.STUNNED:
                 StunTimer += Time.deltaTime;
                 if (StunTimer >= StunMaxTime)
                 {
-                    ThisStatus = Status.roaming;
+                    ThisStatus = Status.ROAMING;
                     StunTimer = 0f;
                 }
                 break;
