@@ -17,9 +17,9 @@ public class FlyingEnemy : MonoBehaviour
 
     [Space]
     [Header("Sine Movement")]
-    [SerializeField] private float curveSpeed = 5f; 
-    [SerializeField] private float curveRadius = 2f;
-    [SerializeField] private float currentSpeed = 0.1f;
+    [SerializeField] private float curveSpeed = 5f; // Speed of the sine wave (frequency)
+    [SerializeField] private float curveRadius = 2f; // Height of the sine wave (amplitude)
+    [SerializeField] private float currentSpeed = 0.1f; // Lateral speed of the enemy
     private float sinCenterY;
     private float direction = -1; //1 for left, -1 for right
     
@@ -42,8 +42,10 @@ public class FlyingEnemy : MonoBehaviour
 
     void SineMovement()
     {
+        // Grab position
         var pos = transform.position;
 
+        // Move in sine wave pattern
         pos.x += direction * currentSpeed * Time.deltaTime;
         float sin = Mathf.Sin(pos.x * curveSpeed) * curveRadius;
         pos.y = sinCenterY + sin;
