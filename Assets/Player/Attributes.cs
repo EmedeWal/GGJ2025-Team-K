@@ -8,6 +8,8 @@ public class Attributes : MonoBehaviour
     private float _prevHealth;
     [SerializeField] private GameObject _playerAirBubble;
     private SpriteRenderer _playerAirBubbleSprite;
+    [Range(0f, 0.5f)]
+    [SerializeField] private float _airLerpScalar;
     void Start()
     {
         // _playerAirBubbleSprite = _playerAirBubble.GetComponentInChildren<SpriteRenderer>();
@@ -48,8 +50,7 @@ public class Attributes : MonoBehaviour
     {
         var currentScale = _playerAirBubble.transform.localScale.x;
         var newScale = _health / _maxHealth;        
-        // var response = 1f - Mathf.Exp(-5f * Time.deltaTime);
-        var scale = Mathf.Lerp(currentScale, newScale, 0.1f);
+        var scale = Mathf.Lerp(currentScale, newScale, _airLerpScalar * Time.deltaTime);
         _playerAirBubble.transform.localScale = new Vector3(scale, scale, 0);
     }
 }
