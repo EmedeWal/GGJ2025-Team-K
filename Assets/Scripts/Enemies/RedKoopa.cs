@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class RedKoopa : MonoBehaviour, IKillable
@@ -23,7 +24,14 @@ public class RedKoopa : MonoBehaviour, IKillable
 
     [SerializeField] private bool die = false;
 
-    [SerializeField] private string status = "roaming"; //roaming means walking around, bubble means in a bubble (so doing nothing), stunned means right after being released from a bubble it cannot move for a bit
+    public enum Status
+    {
+        roaming,
+        bubble,
+        stunned
+    }
+
+    [SerializeField] private Status status = Status.roaming;
 
     void Start()
     {
@@ -34,7 +42,7 @@ public class RedKoopa : MonoBehaviour, IKillable
     {
         switch (status)
         {
-            case "roaming":
+            case Status.roaming:
                 if (staysOnPlatform)
                 {
                     if (CheckEdge() || CheckWall()) //About to fall off platform  
@@ -47,9 +55,10 @@ public class RedKoopa : MonoBehaviour, IKillable
                 currentSpeed = Mathf.Clamp(currentSpeed + acceleration, 0, maxSpeed);
                 _rigibody.linearVelocity = new Vector2(currentSpeed * direction, _rigibody.linearVelocity.y);
                 break;
-            case "bubble":
+            case Status.bubble:
                 break;
-            case "stunned":
+            case Status.stunned:
+                break;
             default:
                 break;
         }
