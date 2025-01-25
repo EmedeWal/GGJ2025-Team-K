@@ -81,7 +81,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     private void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _groundLayers = LayerMask.GetMask("Ground");
         _startPosition = transform.position;
 
