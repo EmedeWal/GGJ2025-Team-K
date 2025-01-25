@@ -4,6 +4,8 @@ namespace Bubbles
 
     public class Motion
     {
+        public bool EnableFloat { get; set; } = true;
+
         private readonly Rigidbody2D _rigidbody;
         private readonly SinMovementStruct _movement;
         private readonly SinMovementStruct _floating;
@@ -38,9 +40,12 @@ namespace Bubbles
 
         public void HandleFloat(float fixedDeltaTime)
         {
+            if (!EnableFloat) 
+                return;
+
             if (_floatTimer > 0)
             {
-                var verticalVelocity = Mathf.Sin((_floatTimer)* _floating.Frequency) * _floating.Intensity;
+                var verticalVelocity = Mathf.Sin(_floatTimer * _floating.Frequency) * _floating.Intensity;
                 _rigidbody.linearVelocity = new Vector2(0, verticalVelocity);
                 _floatTimer += fixedDeltaTime;
             }

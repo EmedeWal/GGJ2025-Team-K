@@ -9,12 +9,17 @@ namespace Bubbles
         public float Frequency;
     }
 
+    public struct BubbleStruct
+    {
+        public Bubble Bubble;
+        public Transform Transform;
+        public GameObject GameObject;
+        public CircleCollider2D Collider;
+        public float Charge;
+    }
+
     public class Bubble : MonoBehaviour, IKillable
     {
-        // Remove this later in favor of passing it while initializing. Clamp to 1 and 2 (or other max value)
-        [Range(1f, 2f)]
-        [SerializeField] private float _charge;
-
         [Header("SETTINGS")]
 
         [Space]
@@ -26,13 +31,13 @@ namespace Bubbles
         [Space]
         [Header("Movement")]
         [SerializeField] private float _movementForce = 10f;
-        [SerializeField] private float _movementIntensity = 0.2f;
+        [SerializeField] private float _movementIntensity = 0.4f;
         [SerializeField] private float _movementFrequency = 4f;
 
         [Space]
         [Header("Floating")]
         [SerializeField] private float _floatVelocity = 4f;
-        [SerializeField] private float _floatIntensity = 0.5f;
+        [SerializeField] private float _floatIntensity = 0.4f;
         [SerializeField] private float _floatFrequency = 2;
         [SerializeField] private float _floatSlowdown = 2f;
 
@@ -54,19 +59,27 @@ namespace Bubbles
         private float _lifeTimeLeft;
 
         // make this an initialize function instead
-        private void Start()
+        public void Initialize()
         {
-            _rigidbody = GetComponent<Rigidbody2D>();
-            Utils.SetRigidbody(_rigidbody);
-            _rigidbody.gravityScale = 0f;
-            _rigidbody.mass = 1 * _charge;
-
             _collider = GetComponent<Collider2D>();
             _collider.enabled = false;
 
             _transform = transform;
+        }
 
-            _adjustedLifeTime = _lifeTime * _charge;
+        public void Charge(float charge)
+        {
+            _transform.localScale = new Vector3(charge, charge, 1);
+        }
+
+        public void Launch(float charge)
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+            Utils.SetRigidbody(_rigidbody);
+            _rigidbody.gravityScale = 0f;
+            _rigidbody.mass = 1 * charge;
+
+            _adjustedLifeTime = _lifeTime * charge;
             _lifeTimeLeft = _adjustedLifeTime;
 
             SinMovementStruct movement = new()
@@ -77,21 +90,24 @@ namespace Bubbles
             };
             SinMovementStruct floating = new()
             {
-                Force = _floatVelocity / _charge,
+                Force = _floatVelocity / charge,
                 Intensity = _floatIntensity,
                 Frequency = _floatFrequency,
             };
 
             _capture = new Capture(_transparency);
-            _explode = new Explode(_explosionForce * _charge, _explosionRadius * _charge);
+            _explode = new Explode(_explosionForce * charge, _explosionRadius * charge);
             _motion = new Motion(_rigidbody, movement, floating, _floatSlowdown);
 
             _capture.Captured += _motion.Motion_ObjectCaptured;
+
+            _collider.enabled = true;
         }
 
         private void OnDisable()
         {
-            _capture.Cleanup();
+            if (_capture != null)
+                _capture.Captured -= _motion.Motion_ObjectCaptured;
         }
 
         private void Update()
@@ -130,13 +146,7 @@ namespace Bubbles
                 Pop(release: true, explode: true);
         }
 
-        private void OnMouseOver()
-        {
-            if (Input.GetMouseButtonDown(0))
-                Pop(release: true, explode: true);
-        }
-
-        private void Pop(bool release, bool explode)
+        public void Pop(bool release, bool explode)
         {
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
@@ -147,6 +157,7 @@ namespace Bubbles
             Destroy(gameObject);
         }
 
+        public void HandleExplosion() => _motion.EnableFloat = false;
         public void Kill() => Pop(release: false, explode: true);
     }
 }

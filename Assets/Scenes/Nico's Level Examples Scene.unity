@@ -1712,6 +1712,10 @@ PrefabInstance:
       propertyPath: _jumpForce
       value: 20.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8269393365371642189, guid: 40d5be39b7200844092dff95e13d2c91, type: 3}
+      propertyPath: _spawnOffset
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

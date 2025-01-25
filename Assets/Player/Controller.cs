@@ -41,13 +41,15 @@ public class Controller : MonoBehaviour, IKillable
 
     [Space]
     [Header("Other")]
+    [SerializeField] private float _bubbleCheckSize = 0.5f;
     [SerializeField] private float _groundCheckSize = 0.2f;
 
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private LayerMask _groundLayers;
+    private LayerMask _bubbleLayers;
 
-    private Bubble _currentBubble;
+    private BubbleStruct _bubbleStruct;
     private Camera _mainCamera;
 
     private int _requestedMovement = 0;
@@ -64,6 +66,7 @@ public class Controller : MonoBehaviour, IKillable
         _boxCollider = GetComponent<BoxCollider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _groundLayers = LayerMask.GetMask("Ground");
+        _bubbleLayers = LayerMask.GetMask("Bubble");
 
         _mainCamera = Camera.main;
 
@@ -94,7 +97,7 @@ public class Controller : MonoBehaviour, IKillable
 
         var mouseWorldPos = (Vector2)_mainCamera.ScreenToWorldPoint(Input.mousePosition);
         HandleTurns(mouseWorldPos);
-        HandleShooting(mouseWorldPos);
+        HandleShooting(mouseWorldPos, Time.fixedDeltaTime);
 
         HorizontalMovement(grounded);
         VerticalMovement(grounded);
@@ -133,22 +136,68 @@ public class Controller : MonoBehaviour, IKillable
         }
     }
 
-    private void HandleShooting(Vector2 mouseWorldPos)
+    private void HandleShooting(Vector2 mouseWorldPos, float deltaTime)
     {
-        if (_requestedShoot && !_currentBubble)
+        // Calculate dir towards mouth
+        var playerPos = _rigidbody.position;
+        playerPos.y += _boxCollider.bounds.extents.y;
+        var direction = (mouseWorldPos - playerPos).normalized;
+
+        // Calculate spawn offset, further away if more charged
+        var spawnOffset = _bubbleStruct.Bubble
+            ? _spawnOffset // + _bubbleStruct.Charge
+            : _spawnOffset;
+        var spawnPosition = playerPos + direction * spawnOffset;
+
+        if (_bubbleStruct.Bubble)
+        { 
+            // Add charge
+            _bubbleStruct.Charge += deltaTime;
+            _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
+            var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
+
+            // Maintain bubble
+            if (_requestedSustainedShoot)
+            {
+                _bubbleStruct.Bubble.Charge(charge);
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                _bubbleStruct.Transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, 0, angle));
+            }
+            else
+            {
+                // Release bubble. Either launch (if no overlap) or dissapate
+                if (!Physics2D.OverlapCircle(spawnPosition, _bubbleStruct.Collider.radius, _groundLayers))
+                {
+                    _bubbleStruct.Transform.SetParent(null);
+                    _bubbleStruct.Bubble.Launch(charge);
+                }
+                else
+                    Destroy(_bubbleStruct.GameObject);
+
+                _bubbleStruct.Bubble = null;
+            }
+        }
+        else if (_requestedShoot)
         {
-            // Calculate dir towards mouth
-            var playerPos = _rigidbody.position;
-            var direction = (mouseWorldPos - playerPos).normalized;
-
-            // Spawn bubble
-            var spawnPosition = playerPos + direction * _spawnOffset;
-            _currentBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
-            _currentBubble.transform.SetParent(transform);
-
-            // Bubble should face the shoot direction
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _currentBubble.transform.rotation = Quaternion.Euler(0, 0, angle);
+            // if raycasts from mouse to thing hits a popBubble, pop the popBubble 
+            var hit = Physics2D.OverlapCircle(mouseWorldPos, _bubbleCheckSize, _bubbleLayers);
+            if (hit && hit.transform.TryGetComponent(out Bubble popBubble))
+                popBubble.Pop(release: true, explode: true);
+            else
+            {
+                // Spawn popBubble
+                var spawnBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
+                _bubbleStruct = new()
+                {
+                    Bubble = spawnBubble,
+                    Transform = spawnBubble.transform,
+                    GameObject = spawnBubble.gameObject,
+                    Collider = spawnBubble.GetComponent<CircleCollider2D>(),
+                    Charge = 0.5f
+                };
+                _bubbleStruct.Transform.SetParent(transform);
+                spawnBubble.Initialize();
+            }
         }
         _requestedShoot = false;
     }
@@ -221,7 +270,7 @@ public class Controller : MonoBehaviour, IKillable
 
     public void Kill()
     {
-        _locked = true;
+        //_locked = true;
     }
 
     // Probably do particles instead of color lerping?

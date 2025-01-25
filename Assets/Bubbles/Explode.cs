@@ -32,6 +32,9 @@ namespace Bubbles
                 var forceMagnitude = Mathf.Lerp(0, explosionForce, 1 - (explosionDistance / explosionRadius));
                 var force = forceMagnitude * explosionDir;
                 rb.AddForce(force, mode);
+
+                if (rb.TryGetComponent(out Bubble bubble))
+                    bubble.HandleExplosion();
             }
         }
     }
