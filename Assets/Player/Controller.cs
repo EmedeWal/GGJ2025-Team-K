@@ -73,6 +73,7 @@ public class Controller : MonoBehaviour
             _rigidbody.gravityScale = _defaultGravity;
         }
 
+        HandleTurns();
         HorizontalMovement(grounded);
         VerticalMovement(grounded);
         HandleFriction(Mathf.Abs(_requestedMovement));
@@ -92,6 +93,16 @@ public class Controller : MonoBehaviour
     {
         _timeSinceGrounded -= deltaTime;
         _timeSinceJumpRequest -= deltaTime;
+    }
+
+    private void HandleTurns()
+    {
+        var localScale = transform.localScale;
+        if (localScale.x > 0 && _requestedMovement < 0 || localScale.x < 0 && _requestedMovement > 0)
+        {
+            localScale.x *= -1;
+            transform.localScale = localScale;
+        }
     }
 
     private void HorizontalMovement(bool grounded)

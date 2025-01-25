@@ -543,7 +543,8 @@ PrefabInstance:
       propertyPath: _lifeTime
       value: 3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1869522659707607548, guid: d4c52dcd081a4ca4c86aa00421a7b6ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
