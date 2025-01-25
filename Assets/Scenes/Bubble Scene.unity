@@ -623,9 +623,9 @@ MonoBehaviour:
   _transparency: 0
   _initialForce: 20
   _response: 1
-  _lifeTime: 3
   _intensity: 0.3
   _frequency: 15
+  _lifeTime: 7
 --- !u!1 &869942292
 GameObject:
   m_ObjectHideFlags: 0

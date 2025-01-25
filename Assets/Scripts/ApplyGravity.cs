@@ -33,7 +33,6 @@ public class ApplyGravity : MonoBehaviour
             _rigidbody.gravityScale = 1;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
         }
-        print(_rigidbody.linearVelocity);
     }
 
     void FreezeConstraints()

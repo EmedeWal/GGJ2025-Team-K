@@ -17,11 +17,15 @@ public class Bubble : MonoBehaviour, IKillable
     [Header("SETTINGS")]
 
     [Space]
+    [Header("Movement")]
     [SerializeField] private float _initialForce = 30f;
     [SerializeField] private float _response = 3f;
-    [SerializeField] private float _lifeTime = 3f;
     [SerializeField] private float _intensity = 3f;
     [SerializeField] private float _frequency = 3f;
+    
+    [Space]
+    [Header("Lifetime")]
+    [SerializeField] private float _lifeTime = 3f;
 
     private Rigidbody2D _rigidbody;
     private Transform _transform;
