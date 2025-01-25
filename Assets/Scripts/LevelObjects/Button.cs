@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Button : MonoBehaviour
 {
@@ -9,6 +10,19 @@ public class Button : MonoBehaviour
     [SerializeField] private bool _playerCanPress = false;
 
     [SerializeField] private List<TriggerableByButton> triggers;
+
+    private void Start()
+    {
+        LevelManager.resetGameState += LevelManager_resetGameState;
+    }
+
+    private void LevelManager_resetGameState()
+    {
+        _isPressed = false;
+        var pos = _pressedObject.transform.position;
+        pos.y += 0.17f;
+        _pressedObject.transform.position = pos;
+    }
 
     void OnTriggerEnter2D(Collider2D collider)
     {

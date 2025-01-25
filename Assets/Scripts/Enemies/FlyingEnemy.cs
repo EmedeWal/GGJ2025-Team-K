@@ -13,7 +13,7 @@ public class FlyingEnemy : BaseEnemy
     [Header("Sine Movement")]
     [SerializeField] private float curveSpeed = 5f; // Speed of the sine wave (frequency)
     [SerializeField] private float curveRadius = 2f; // Height of the sine wave (amplitude)
-    [SerializeField] private float lateralSpeed = 0.1f; // Lateral speed of the enemy
+    [SerializeField] private float lateralSpeed = 0.8f; // Lateral speed of the enemy
     private float sinCenterY;
 
     void Start()

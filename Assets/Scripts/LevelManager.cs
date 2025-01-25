@@ -5,7 +5,7 @@ using System;
 
 public class LevelManager : MonoBehaviour
 {
-    public static event Action resetGameState;
+    public static event Action resetGameState; //This should be put on every movable object or alterable object so it resets when resetting or changing levels
 
     [SerializeField] private Camera camera;
     [SerializeField] private CinemachineCamera cineCamera;
@@ -65,7 +65,12 @@ public class LevelManager : MonoBehaviour
                 camera.transform.position = new Vector3(70f, 0, camera.transform.position.z);
                 break;
             case 4:
-                staticCamera = false; //Should start at 105f
+                staticCamera = true;
+                cineCamera.enabled = false;
+                camera.transform.position = new Vector3(105f, 0, camera.transform.position.z);
+                break;
+            case 5:
+                staticCamera = false;
                 cineCamera.enabled = true;
                 break;
             default:

@@ -8,12 +8,23 @@ public class MovingPlatform : MonoBehaviour
     /// IF you have the time you could add code to make it accelerate and deccelerate smoothly when it changes directions
     /// </summary>
 
+    private Vector2 startPosition;
+
     [SerializeField] private List<Vector2> moveTargets;
     [SerializeField] private Vector2 currentTarget;
     private int currentTargetIndex = 0;
 
     void Start()
     {
+        startPosition = transform.position;
+        currentTarget = moveTargets[0];
+
+        LevelManager.resetGameState += LevelManager_resetGameState;
+    }
+
+    private void LevelManager_resetGameState()
+    {
+        transform.position = startPosition;
         currentTarget = moveTargets[0];
     }
 
