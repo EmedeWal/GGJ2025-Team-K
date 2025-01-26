@@ -1,4 +1,5 @@
 using Bubbles;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,7 +70,6 @@ public class Controller : MonoBehaviour, IKillable
     private Attributes _attributes;
 
     private CustomCursor _customCursor;
-    private CustomSlider _customSlider;
     private Camera _mainCamera;
 
     private int _requestedMovement = 0;
@@ -90,10 +90,14 @@ public class Controller : MonoBehaviour, IKillable
 
         _attributes = new Attributes(_airBubbleTransform, _maxHealth, _bubbleResponse);
         _customCursor = FindFirstObjectByType<CustomCursor>();
-        _customSlider = _healthSlider.GetComponent<CustomSlider>();
         _mainCamera = Camera.main;
 
         Utils.SetRigidbody(_rigidbody);
+    }
+
+    private void OnDisable()
+    {
+        _attributes.Cleanup();
     }
 
     private void Update()
@@ -176,17 +180,13 @@ public class Controller : MonoBehaviour, IKillable
 
         if (_bubbleStruct.Bubble)
         {
-            // Initialise slider
-            if (!_customSlider.IsCharging)
-                _customSlider.InitializeChargeSlider();
-
             // Add charge
             _bubbleStruct.Charge += deltaTime;
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
             var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
 
-            // add charge to slider
-            _customSlider.SliderCharging(charge);
+            _attributes.OnHealthUpdated(_bubbleStruct.Health);
+            _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
 
             // Maintain BUBBLED
             if (_requestedSustainedShoot)
@@ -202,15 +202,13 @@ public class Controller : MonoBehaviour, IKillable
                 // Release BUBBLED. Either launch (if no overlap) or dissapate
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
-                {
-                    _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
                     _bubbleStruct.Bubble.Launch(charge);
-                }
                 else
+                {
+                    _attributes.AddHealth(_bubbleStruct.Bubble.Volume);
                     Destroy(_bubbleStruct.Bubble.gameObject);
-
+                }
                 _bubbleStruct.Bubble = null;
-                _customSlider.EndCharge(charge);
             }
         }
         else if (_requestedShoot)
@@ -225,6 +223,7 @@ public class Controller : MonoBehaviour, IKillable
                 {
                     Bubble = spawnBubble,
                     Collider = spawnBubble.GetComponent<CircleCollider2D>(),
+                    Health = _attributes.CurrentHealth,
                     Charge = 0.5f
                 };
                 spawnBubble.Initialize();
@@ -299,10 +298,6 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
-    public void OnHealthAdd(float v)
-    {
-        _healthSlider.value += v;
-    }
     public void Kill()
     {
         var levelManager = GameObject.FindFirstObjectByType<LevelManager>();
