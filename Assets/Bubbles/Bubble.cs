@@ -141,8 +141,8 @@ namespace Bubbles
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (!_capture.HasCapture && collision.gameObject.CompareTag("Capturable"))
-                _capture.OnCaptured(_transform, collision.transform);
+            if (!_capture.HasCapture && collision.transform.TryGetComponent(out BaseEnemy enemy) && enemy.GetState() is State.ROAMING)
+                _capture.OnCaptured(transform, collision.transform);
             else if (collision.transform.TryGetComponent(out Controller controller))
             {
                 var explode = controller.Rigidbody.linearVelocity.y < 0;
