@@ -51,7 +51,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     protected virtual void FixedUpdate()
     {
-        Debug.Log(_CurrentState);
         switch (_CurrentState)
         {
             case State.ROAMING:
@@ -67,7 +66,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
             case State.BUBBLED:
                 break;
             case State.STUNNED:
-                Debug.Log("handle stuns");
                 HandleStuns();
                 break;
             default:
@@ -109,7 +107,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     public void Stun()
     {
-        Debug.Log("stunned");
         _CurrentState = State.STUNNED;
         _StunTimer = _TotalStunTime;
     }
@@ -118,8 +115,6 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     private void ToggleActive(bool active)
     {
-        Debug.Log("Set active: " + active);
-
         var state = active
             ? State.ROAMING
             : State.BUBBLED;

@@ -165,19 +165,18 @@ namespace Bubbles
         public void OnPop(bool release, bool explode)
         {
             AudioManager.Instance.PlayClip(_popClip);
-            Pop?.Invoke(this);
 
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
             if (_capture.CaptureTarget)
             {
-                if (release)
-                    _capture.OnReleased();
-                else
+                _capture.OnReleased();
+
+                if (!release)
                     _capture.CaptureTarget.GetComponent<IKillable>().Kill();
             }
-            Destroy(gameObject);
+            Pop?.Invoke(this);
         }
 
         public void HandleExplosion() => _motion.EnableFloat = false;
