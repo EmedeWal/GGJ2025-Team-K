@@ -14,6 +14,6 @@ public class MainMenuManager : MonoBehaviour
 
     public void ChangeLevel(string levelName)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(levelName);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(levelName);
     }
 }
