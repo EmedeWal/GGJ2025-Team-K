@@ -210,7 +210,7 @@ public class Controller : MonoBehaviour, IKillable
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
                 {
-                    var force = _jumpForce * 0.5f * _bubbleStruct.Charge;
+                    var force = _jumpForce * 0.2f * Mathf.Exp(_bubbleStruct.Charge);
                     _rigidbody.AddForce(-direction * force, ForceMode2D.Impulse);
                     _bubbleStruct.Bubble.Launch(charge);
                 }
@@ -329,10 +329,13 @@ public class Controller : MonoBehaviour, IKillable
 
     public void Kill()
     {
-        for (int i = _bubbles.Count - 1; i >= 0; i--)
-            _bubbles[i].OnPop(release: true, explode: false);
+        if (_bubbleStruct.Bubble)
+            RemoveBubble(_bubbleStruct.Bubble);
 
         var levelManager = FindFirstObjectByType<LevelManager>();
         levelManager.ChangeLevels(levelManager.currentLevel);
+
+        for (int i = _bubbles.Count - 1; i >= 0; i--)
+            _bubbles[i].OnPop(release: true, explode: false);
     }
 }

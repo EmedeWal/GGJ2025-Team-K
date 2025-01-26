@@ -171,10 +171,10 @@ namespace Bubbles
 
             if (_capture.CaptureTarget)
             {
-                _capture.OnReleased();
-
                 if (!release)
                     _capture.CaptureTarget.GetComponent<IKillable>().Kill();
+
+                _capture.OnReleased();
             }
             Pop?.Invoke(this);
         }
