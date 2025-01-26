@@ -28,6 +28,8 @@ public class CustomSlider : MonoBehaviour
         _thisSlider.maxValue = 100;
         _thisSlider.minValue = 0;
         _thisSlider.value = 100;
+
+        LevelManager.ResetGameState += Slider_ResetGameState;
     }
 
     void FixedUpdate()
@@ -37,8 +39,8 @@ public class CustomSlider : MonoBehaviour
 
     public void InitializeChargeSlider()
     {
-        var tempSlider = Instantiate(_newSliderPrefab, gameObject.transform);
-        tempSlider.transform.position = new Vector3(0, 0);
+        var tempSlider = Instantiate(_newSliderPrefab, gameObject.transform.parent.transform);
+        tempSlider.transform.position = gameObject.transform.position;        
         _newSlider = tempSlider.GetComponent<Slider>();
         _newSlider.value = 10;
         _newSlider.maxValue = 20;
@@ -65,11 +67,10 @@ public class CustomSlider : MonoBehaviour
         _thisSlider.value = _value;
     }
 
-    public void ResetSlider()
+    public void Slider_ResetGameState()
     {
         _value = 100;
         _isCharging = false;
         _thisSlider.value = _value;
     }
-
 }
