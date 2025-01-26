@@ -1,6 +1,6 @@
-using Bubbles;
 using UnityEngine;
-using UnityEngine.UI;
+using Bubbles;
+using System;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -54,10 +54,6 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _bubbleResponse = 1f;
 
-    [Space]
-    [Header("References")]
-    [SerializeField] Slider _healthSlider;
-
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -69,15 +65,15 @@ public class Controller : MonoBehaviour, IKillable
     private Attributes _attributes;
 
     private CustomCursor _customCursor;
-    private CustomSlider _customSlider;
     private Camera _mainCamera;
 
     private int _requestedMovement = 0;
     private float _timeSinceGrounded = 0;
     private float _timeSinceJumpRequest = 0;
     private bool _requestedJumpCut = false;
-    private bool _requestedShoot = false;
-    private bool _requestedSustainedShoot = false;
+    private bool _requestedShootLeft = false;
+    private bool _requestedShootRight = false;
+    private bool _requestedSustainedShootLeft = false;
 
     private void Start()
     {
@@ -90,10 +86,14 @@ public class Controller : MonoBehaviour, IKillable
 
         _attributes = new Attributes(_airBubbleTransform, _maxHealth, _bubbleResponse);
         _customCursor = FindFirstObjectByType<CustomCursor>();
-        _customSlider = _healthSlider.GetComponent<CustomSlider>();
         _mainCamera = Camera.main;
 
         Utils.SetRigidbody(_rigidbody);
+    }
+
+    private void OnDisable()
+    {
+        _attributes.Cleanup();
     }
 
     private void Update()
@@ -142,9 +142,10 @@ public class Controller : MonoBehaviour, IKillable
             _timeSinceJumpRequest = _jumpBuffer;
 
         _requestedJumpCut = _requestedJumpCut || Input.GetKeyUp(KeyCode.Space);
-        
-        _requestedShoot = _requestedShoot || Input.GetMouseButtonDown(0);
-        _requestedSustainedShoot = Input.GetMouseButton(0);
+
+        _requestedShootRight = _requestedShootRight || Input.GetMouseButtonDown(1);
+        _requestedShootLeft = _requestedShootLeft || Input.GetMouseButtonDown(0);
+        _requestedSustainedShootLeft = Input.GetMouseButton(0);
     }
 
     private void TickTimers(float deltaTime)
@@ -176,20 +177,16 @@ public class Controller : MonoBehaviour, IKillable
 
         if (_bubbleStruct.Bubble)
         {
-            // Initialise slider
-            if (!_customSlider.IsCharging)
-                _customSlider.InitializeChargeSlider();
-
             // Add charge
             _bubbleStruct.Charge += deltaTime;
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
             var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
 
-            // add charge to slider
-            _customSlider.SliderCharging(charge);
+            _attributes.OnHealthUpdated(_bubbleStruct.Health);
+            _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
 
             // Maintain BUBBLED
-            if (_requestedSustainedShoot)
+            if (_requestedSustainedShootLeft)
             {
                 // Restrict downward aiming by clamping within allowed regions
                 var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -202,35 +199,36 @@ public class Controller : MonoBehaviour, IKillable
                 // Release BUBBLED. Either launch (if no overlap) or dissapate
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
-                {
-                    _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
                     _bubbleStruct.Bubble.Launch(charge);
-                }
                 else
+                {
+                    _attributes.AddHealth(_bubbleStruct.Bubble.Volume);
                     Destroy(_bubbleStruct.Bubble.gameObject);
-
+                }
                 _bubbleStruct.Bubble = null;
-                _customSlider.EndCharge(charge);
             }
         }
-        else if (_requestedShoot)
+        else if (_requestedShootLeft)
         {
+            // Spawn popBubble
+            var spawnBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
+            _bubbleStruct = new()
+            {
+                Bubble = spawnBubble,
+                Collider = spawnBubble.GetComponent<CircleCollider2D>(),
+                Health = _attributes.CurrentHealth,
+                Charge = 0.5f
+            };
+            spawnBubble.Initialize();
+        }
+        else if (_requestedShootRight)
+        {
+            // Pop the bubble
             if (hit && hit.transform.TryGetComponent(out Bubble popBubble))
                 popBubble.Pop(release: true, explode: true);
-            else
-            {
-                // Spawn popBubble
-                var spawnBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
-                _bubbleStruct = new()
-                {
-                    Bubble = spawnBubble,
-                    Collider = spawnBubble.GetComponent<CircleCollider2D>(),
-                    Charge = 0.5f
-                };
-                spawnBubble.Initialize();
-            }
         }
-        _requestedShoot = false;
+        _requestedShootRight = false;
+        _requestedShootLeft = false;
     }
 
     private void HorizontalMovement(bool grounded)
@@ -299,10 +297,6 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
-    public void OnHealthAdd(float v)
-    {
-        _healthSlider.value += v;
-    }
     public void Kill()
     {
         var levelManager = GameObject.FindFirstObjectByType<LevelManager>();

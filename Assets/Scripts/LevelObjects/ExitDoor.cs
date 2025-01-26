@@ -5,7 +5,7 @@ public class ExitDoor : MonoBehaviour
 {
     private LevelManager manager;
     public bool unlocked = false;
-    [SerializeField] private doorType type = doorType.unlocked;
+    public doorType type = doorType.unlocked;
 
     private int startingEnemies;
     public int enemiesLeft = 3;
@@ -22,6 +22,16 @@ public class ExitDoor : MonoBehaviour
     {
         startingEnemies = enemiesLeft;
         manager = FindAnyObjectByType<LevelManager>();
+        LevelManager.ResetGameState += LevelManager_resetGameState;
+    }
+
+    private void LevelManager_resetGameState()
+    {
+        if (type != doorType.unlocked)
+        {
+            unlocked = false;
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
     }
 
     void Update()
@@ -38,8 +48,9 @@ public class ExitDoor : MonoBehaviour
             if (enemiesLeft <= 0)
             {
                 unlocked = true;
+                GetComponent<SpriteRenderer>().color = Color.black;
             }
-            // enemiesLeft = startingEnemies;
+            enemiesLeft = startingEnemies;
         }
     }
 
