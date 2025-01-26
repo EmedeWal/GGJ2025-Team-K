@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Attributes
 {
@@ -8,6 +9,8 @@ public class Attributes
     private readonly float _scaleFactor;
     private readonly float _response;
     private readonly float _maximumHealth;
+
+    public static event Action<float> HealthUpdated;
 
     public Attributes(Transform airBubbleTransform, float maximumHealth, float response)
     {
@@ -21,6 +24,11 @@ public class Attributes
         LevelManager.ResetGameState += Attributes_ResetGameState;
     }
 
+    public void Cleanup()
+    {
+        HealthUpdated = null;
+    }
+
     public void LateTick(float deltaTime)
     {
         var currentScale = _airBubbleTransform.localScale.x;
@@ -31,22 +39,27 @@ public class Attributes
         _airBubbleTransform.localScale = new Vector3(scale, scale, 0);
     }
 
-    public float GetCurrentHealth()
-    {
-        return CurrentHealth;
-    }
-
     public void RemoveHealth(float damage)
     {
-        CurrentHealth -= damage;
-        CurrentHealth = Mathf.Max(CurrentHealth, 0);
+        var targetHealth = CurrentHealth - damage;
+        targetHealth = Mathf.Max(targetHealth, 0);
+
+        OnHealthUpdated(targetHealth);
     }
 
     public void AddHealth(float health)
     {
-        CurrentHealth += health;
-        CurrentHealth = Mathf.Min(CurrentHealth, _maximumHealth);
+        var targetHealth = CurrentHealth + health;
+        targetHealth = Mathf.Min(targetHealth, _maximumHealth);
+
+        OnHealthUpdated(targetHealth);
     }
 
-    private void Attributes_ResetGameState() => CurrentHealth = _maximumHealth;
+    public void OnHealthUpdated(float health)
+    {
+        CurrentHealth = health;
+        HealthUpdated?.Invoke(health);
+    }
+
+    private void Attributes_ResetGameState() => OnHealthUpdated(_maximumHealth);
 }
