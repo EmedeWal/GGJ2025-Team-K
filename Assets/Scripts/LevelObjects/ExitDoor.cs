@@ -22,6 +22,16 @@ public class ExitDoor : MonoBehaviour
     {
         startingEnemies = enemiesLeft;
         manager = FindAnyObjectByType<LevelManager>();
+        LevelManager.ResetGameState += LevelManager_resetGameState;
+    }
+
+    private void LevelManager_resetGameState()
+    {
+        if (type != doorType.unlocked)
+        {
+            unlocked = false;
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
     }
 
     void Update()
@@ -38,6 +48,7 @@ public class ExitDoor : MonoBehaviour
             if (enemiesLeft <= 0)
             {
                 unlocked = true;
+                GetComponent<SpriteRenderer>().color = Color.black;
             }
             // enemiesLeft = startingEnemies;
         }
