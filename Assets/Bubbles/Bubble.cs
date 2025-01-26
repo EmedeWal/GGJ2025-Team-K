@@ -1,6 +1,7 @@
 namespace Bubbles
 {
     using UnityEngine;
+    using System;
 
     public struct SinMovementStruct
     {
@@ -58,6 +59,8 @@ namespace Bubbles
 
         private float _adjustedLifeTime;
         private float _lifeTimeLeft;
+
+        public event Action<Bubble> Pop;
 
         // make this an initialize function instead
         public void Initialize()
@@ -125,7 +128,7 @@ namespace Bubbles
             {
                 _lifeTimeLeft -= Time.deltaTime;
                 if (_lifeTimeLeft <= 0)
-                    Pop(release: true, explode: false);
+                    OnPop(release: true, explode: false);
             }
         }
 
@@ -150,13 +153,14 @@ namespace Bubbles
             {
                 controller.Attributes.AddHealth(Volume);
                 var explode = controller.Rigidbody.linearVelocity.y < 0;
-                controller.Attributes.AddHealth(Volume);
-                Pop(release: true, explode: explode);
+                OnPop(release: true, explode: explode);
             }
         }
 
-        public void Pop(bool release, bool explode)
+        public void OnPop(bool release, bool explode)
         {
+            Pop?.Invoke(this);
+
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
@@ -173,6 +177,6 @@ namespace Bubbles
         }
 
         public void HandleExplosion() => _motion.EnableFloat = false;
-        public void Kill() => Pop(release: false, explode: true);
+        public void Kill() => OnPop(release: false, explode: true);
     }
 }
