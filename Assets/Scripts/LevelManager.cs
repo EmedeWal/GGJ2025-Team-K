@@ -39,20 +39,11 @@ public class LevelManager : MonoBehaviour
     {
         //DEBUG TOOLS to go to the next or previous level
         if (Input.GetKeyDown(KeyCode.O))
-        {
             ChangeLevels(currentLevel + 1);
-            Debug.Log("Current Level + 1");
-        }
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
+        else if (Input.GetKeyDown(KeyCode.Backspace))
             ChangeLevels(currentLevel - 1);
-            Debug.Log("Current Level - 1");
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            ChangeLevels(currentLevel);
-            Debug.Log("Restarted Level");
-        }
+        else if (Input.GetKeyDown(KeyCode.R))
+            FindFirstObjectByType<Controller>().Kill();
     }
 
     public void ChangeLevels(int newLevel)

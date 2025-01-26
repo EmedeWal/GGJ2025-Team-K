@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Bubbles;
 using System;
@@ -57,6 +58,7 @@ public class Controller : MonoBehaviour, IKillable
     [Space]
     [Header("Audio")]
     [SerializeField] private AudioClip _blowClip;
+    private List<Bubble> _bubbles = new();
 
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
@@ -98,6 +100,9 @@ public class Controller : MonoBehaviour, IKillable
     private void OnDisable()
     {
         _attributes.Cleanup();
+
+        foreach (var bubble in _bubbles)
+            bubble.OnPop(release: true, explode: false);
     }
 
     private void Update()
@@ -208,7 +213,7 @@ public class Controller : MonoBehaviour, IKillable
                 else
                 {
                     _attributes.AddHealth(_bubbleStruct.Bubble.Volume);
-                    Destroy(_bubbleStruct.Bubble.gameObject);
+                    RemoveBubble(_bubbleStruct.Bubble);
                 }
                 _bubbleStruct.Bubble = null;
             }
@@ -224,13 +229,13 @@ public class Controller : MonoBehaviour, IKillable
                 Health = _attributes.CurrentHealth,
                 Charge = 0.5f
             };
-            spawnBubble.Initialize();
+            AddBubble(spawnBubble);
         }
         else if (_requestedShootRight)
         {
-            // Pop the bubble
+            // OnPop the bubble
             if (hit && hit.transform.TryGetComponent(out Bubble popBubble))
-                popBubble.Pop(release: true, explode: true);
+                popBubble.OnPop(release: true, explode: true);
         }
         _requestedShootRight = false;
         _requestedShootLeft = false;
@@ -302,9 +307,28 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
+    private void AddBubble(Bubble bubble)
+    {
+        bubble.Initialize();
+        _bubbles.Add(bubble);
+        bubble.Pop += Controller_Pop;
+    }
+
+    private void RemoveBubble(Bubble bubble)
+    {
+        _bubbles.Remove(bubble);
+        bubble.Pop -= Controller_Pop;
+        Destroy(bubble.gameObject);
+    }
+
+    private void Controller_Pop(Bubble bubble) => RemoveBubble(bubble);
+
     public void Kill()
     {
-        var levelManager = GameObject.FindFirstObjectByType<LevelManager>();
+        for (int i = _bubbles.Count - 1; i >= 0; i--)
+            _bubbles[i].OnPop(release: true, explode: false);
+
+        var levelManager = FindFirstObjectByType<LevelManager>();
         levelManager.ChangeLevels(levelManager.currentLevel);
     }
 }
