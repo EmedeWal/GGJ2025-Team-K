@@ -56,7 +56,7 @@ namespace Bubbles
             _struct.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
 
             if (_struct.Enemy)
-                _struct.Enemy.UpdateState(State.BUBBLED);
+                _struct.Enemy.SetState(State.BUBBLED);
 
             Captured?.Invoke();
         }
@@ -67,7 +67,7 @@ namespace Bubbles
 
             var isEnemy = _struct.Enemy;
             if (isEnemy)
-                _struct.Enemy.UpdateState(State.STUNNED);
+                _struct.Enemy.SetState(State.STUNNED);
 
             _struct.Transform.SetParent(null);
             _struct.Collider.enabled = true;

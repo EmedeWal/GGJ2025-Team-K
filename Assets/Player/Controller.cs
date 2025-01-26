@@ -32,8 +32,8 @@ public class Controller : MonoBehaviour, IKillable
 
     [Space]
     [Header("Gravity")]
-    [SerializeField] private float _defaultGravity = 3f;
-    [SerializeField] private float _gravityIncrement = 0.03f;
+    [SerializeField] private float _defaultGravity = 2f;
+    [SerializeField] private float _gravityIncrement = 0.02f;
 
     [Space]
     [Header("Other")]

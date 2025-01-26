@@ -96,13 +96,15 @@ public class BaseEnemy : MonoBehaviour, IKillable
         return Physics2D.Raycast(origin, dir, dir.magnitude, _groundLayers);
     }
 
-    public void UpdateState(State state)
+    public void SetState(State state)
     {
         _CurrentState = state;
 
         if (state is State.STUNNED)
             _StunTimer = _TotalStunTime;
     }
+
+    public State GetState() => _CurrentState;
 
     public void Kill() => Destroy(gameObject);
 }
