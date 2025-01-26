@@ -225,6 +225,7 @@ public class Controller : MonoBehaviour, IKillable
                     RemoveBubble(_bubbleStruct.Bubble);
                 }
                 _bubbleStruct.Bubble = null;
+                _isPlayingClip = false;
             }
         }
         else if (_requestedShootLeft)
