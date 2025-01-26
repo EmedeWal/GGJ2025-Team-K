@@ -1,5 +1,6 @@
 using Bubbles;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -53,6 +54,10 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _bubbleResponse = 1f;
 
+    [Space]
+    [Header("References")]
+    [SerializeField] Slider _healthSlider;
+
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -64,6 +69,7 @@ public class Controller : MonoBehaviour, IKillable
     private Attributes _attributes;
 
     private CustomCursor _customCursor;
+    private CustomSlider _customSlider;
     private Camera _mainCamera;
 
     private int _requestedMovement = 0;
@@ -84,6 +90,7 @@ public class Controller : MonoBehaviour, IKillable
 
         _attributes = new Attributes(_airBubbleTransform, _maxHealth, _bubbleResponse);
         _customCursor = FindFirstObjectByType<CustomCursor>();
+        _customSlider = _healthSlider.GetComponent<CustomSlider>();
         _mainCamera = Camera.main;
 
         Utils.SetRigidbody(_rigidbody);

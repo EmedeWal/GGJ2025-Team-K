@@ -31,6 +31,11 @@ public class Attributes
         _airBubbleTransform.localScale = new Vector3(scale, scale, 0);
     }
 
+    public float GetCurrentHealth()
+    {
+        return CurrentHealth;
+    }
+
     public void RemoveHealth(float damage)
     {
         CurrentHealth -= damage;
