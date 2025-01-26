@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8339777808591014633}
   - component: {fileID: 277388304042730440}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 7963927219830055304}
   - component: {fileID: 3506004266342148363}
   - component: {fileID: 6181662439399928874}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 7989135065547511408}
   - component: {fileID: 9184391589670944505}
   - component: {fileID: 8269393365371642189}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}

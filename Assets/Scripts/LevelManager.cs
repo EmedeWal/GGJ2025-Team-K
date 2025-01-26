@@ -54,27 +54,22 @@ public class LevelManager : MonoBehaviour
             case 1:
                 staticCamera = true;
                 _camera._levelBounds = bounds1;
-                //_camera.transform.position = new Vector3(0.48f, 0, _camera.transform.position.z);
                 break;
             case 2:
                 staticCamera = true;
                 _camera._levelBounds = bounds2;
-                //_camera.transform.position = new Vector3(36f, 0, _camera.transform.position.z);
                 break;
             case 3:
                 staticCamera = true;
                 _camera._levelBounds = bounds3;
-                //_camera.transform.position = new Vector3(70f, 0, _camera.transform.position.z);
                 break;
             case 4:
                 staticCamera = true;
                 _camera._levelBounds = bounds4;
-                //_camera.transform.position = new Vector3(105f, 0, _camera.transform.position.z);
                 break;
             case 5:
                 staticCamera = false;
                 _camera._levelBounds = bounds5;
-                //cineCamera.enabled = true;
                 break;
             case 6:
                 _camera._levelBounds = bounds6;

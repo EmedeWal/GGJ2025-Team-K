@@ -138,6 +138,7 @@ MonoBehaviour:
   _MaxSpeed: 3
   _Direction: -1
   _TotalStunTime: 1
+  _playerCheckSize: {x: 0.6, y: 2}
 --- !u!61 &8804458007075524721
 BoxCollider2D:
   m_ObjectHideFlags: 0

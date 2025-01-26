@@ -62,7 +62,7 @@ namespace Bubbles
         }
 
         public void OnReleased()
-        {
+        { 
             ChangeCapturedObjectAlpha(1);
 
             var isEnemy = _struct.Enemy;

@@ -327,7 +327,8 @@ public class Controller : MonoBehaviour, IKillable
     {
         _bubbles.Remove(bubble);
         bubble.Pop -= Controller_Pop;
-        Destroy(bubble.gameObject);
+        bubble.Cleanup();
+        Destroy(bubble);
     }
 
     private void Controller_Pop(Bubble bubble) => RemoveBubble(bubble);

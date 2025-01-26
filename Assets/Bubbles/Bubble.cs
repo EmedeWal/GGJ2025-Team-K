@@ -54,6 +54,8 @@ namespace Bubbles
         [Header("Audio")]
         [SerializeField] private AudioClip _popClip;
 
+        private ParticleSystem _particleSystem;
+        private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
         private Transform _transform;
@@ -76,6 +78,18 @@ namespace Bubbles
             _transform = transform;
         }
 
+        public void Cleanup()
+        {
+            if (_capture != null)
+                _capture.Captured -= _motion.Motion_ObjectCaptured;
+
+            var color = _spriteRenderer.color;
+            color.a = 0;
+            _spriteRenderer.color = color;
+            _rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            _collider.enabled = false;
+        }
+
         public void Charge(float charge)
         {
             Volume = Mathf.CeilToInt(charge * 10);
@@ -86,6 +100,8 @@ namespace Bubbles
         {
             Volume = Mathf.CeilToInt(charge * 10);
 
+            _particleSystem = GetComponentInChildren<ParticleSystem>();
+            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             _rigidbody = GetComponent<Rigidbody2D>();
             Utils.SetRigidbody(_rigidbody);
             _rigidbody.gravityScale = 0f;
@@ -118,8 +134,7 @@ namespace Bubbles
 
         private void OnDisable()
         {
-            if (_capture != null)
-                _capture.Captured -= _motion.Motion_ObjectCaptured;
+            Cleanup();
         }
 
         private void Update()
@@ -166,15 +181,27 @@ namespace Bubbles
         {
             AudioManager.Instance.PlayClip(_popClip);
 
+            // Reference to your particle system
+            var mainModule = _particleSystem.main; 
+            mainModule.startSpeed = 10 * Volume;
+            mainModule.startSize = 0.25f * Volume;
+
+            var emissionModule = _particleSystem.emission;
+            ParticleSystem.Burst burst = new(0.0f, 2.5f * Volume);
+            emissionModule.SetBursts(new ParticleSystem.Burst[] { burst });
+
+            _particleSystem.Play();
+
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
-            if (_capture.CaptureTarget)
+            var captureTarget = _capture.CaptureTarget;
+            if (captureTarget)
             {
-                if (!release)
-                    _capture.CaptureTarget.GetComponent<IKillable>().Kill();
-
                 _capture.OnReleased();
+
+                if (!release)
+                    captureTarget.GetComponent<IKillable>().Kill();
             }
             Pop?.Invoke(this);
         }
