@@ -60,6 +60,7 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private AudioClip _blowClip;
     private List<Bubble> _bubbles = new();
 
+    private bool _isPlayingClip = false;
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -186,7 +187,11 @@ public class Controller : MonoBehaviour, IKillable
 
         if (_bubbleStruct.Bubble)
         {
-            AudioManager.Instance.PlayClip(_blowClip);
+            if (!_isPlayingClip)
+            {
+                AudioManager.Instance.PlayClip(_blowClip);
+                _isPlayingClip = true;
+            }
             // Add charge
             _bubbleStruct.Charge += deltaTime;
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
