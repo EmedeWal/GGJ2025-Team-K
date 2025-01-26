@@ -1,7 +1,6 @@
+using UnityEngine;
 using Bubbles;
 using System;
-using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -55,10 +54,6 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _bubbleResponse = 1f;
 
-    [Space]
-    [Header("References")]
-    [SerializeField] Slider _healthSlider;
-
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -76,8 +71,9 @@ public class Controller : MonoBehaviour, IKillable
     private float _timeSinceGrounded = 0;
     private float _timeSinceJumpRequest = 0;
     private bool _requestedJumpCut = false;
-    private bool _requestedShoot = false;
-    private bool _requestedSustainedShoot = false;
+    private bool _requestedShootLeft = false;
+    private bool _requestedShootRight = false;
+    private bool _requestedSustainedShootLeft = false;
 
     private void Start()
     {
@@ -146,9 +142,10 @@ public class Controller : MonoBehaviour, IKillable
             _timeSinceJumpRequest = _jumpBuffer;
 
         _requestedJumpCut = _requestedJumpCut || Input.GetKeyUp(KeyCode.Space);
-        
-        _requestedShoot = _requestedShoot || Input.GetMouseButtonDown(0);
-        _requestedSustainedShoot = Input.GetMouseButton(0);
+
+        _requestedShootRight = _requestedShootRight || Input.GetMouseButtonDown(1);
+        _requestedShootLeft = _requestedShootLeft || Input.GetMouseButtonDown(0);
+        _requestedSustainedShootLeft = Input.GetMouseButton(0);
     }
 
     private void TickTimers(float deltaTime)
@@ -189,7 +186,7 @@ public class Controller : MonoBehaviour, IKillable
             _attributes.RemoveHealth(_bubbleStruct.Bubble.Volume);
 
             // Maintain BUBBLED
-            if (_requestedSustainedShoot)
+            if (_requestedSustainedShootLeft)
             {
                 // Restrict downward aiming by clamping within allowed regions
                 var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -211,25 +208,27 @@ public class Controller : MonoBehaviour, IKillable
                 _bubbleStruct.Bubble = null;
             }
         }
-        else if (_requestedShoot)
+        else if (_requestedShootLeft)
         {
+            // Spawn popBubble
+            var spawnBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
+            _bubbleStruct = new()
+            {
+                Bubble = spawnBubble,
+                Collider = spawnBubble.GetComponent<CircleCollider2D>(),
+                Health = _attributes.CurrentHealth,
+                Charge = 0.5f
+            };
+            spawnBubble.Initialize();
+        }
+        else if (_requestedShootRight)
+        {
+            // Pop the bubble
             if (hit && hit.transform.TryGetComponent(out Bubble popBubble))
                 popBubble.Pop(release: true, explode: true);
-            else
-            {
-                // Spawn popBubble
-                var spawnBubble = Instantiate(_bubblePrefab, spawnPosition, Quaternion.identity);
-                _bubbleStruct = new()
-                {
-                    Bubble = spawnBubble,
-                    Collider = spawnBubble.GetComponent<CircleCollider2D>(),
-                    Health = _attributes.CurrentHealth,
-                    Charge = 0.5f
-                };
-                spawnBubble.Initialize();
-            }
         }
-        _requestedShoot = false;
+        _requestedShootRight = false;
+        _requestedShootLeft = false;
     }
 
     private void HorizontalMovement(bool grounded)
