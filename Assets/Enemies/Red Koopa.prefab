@@ -137,7 +137,6 @@ MonoBehaviour:
   _Acceleration: 0.1
   _MaxSpeed: 3
   _Direction: -1
-  _CurrentState: 0
   _TotalStunTime: 1
 --- !u!61 &8804458007075524721
 BoxCollider2D:

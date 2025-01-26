@@ -55,8 +55,10 @@ public class Controller : MonoBehaviour, IKillable
 
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
+    private Animator _animator;
     private LayerMask _groundLayers;
     private LayerMask _bubbleLayers;
+    private int _inputHash;
 
     private BubbleStruct _bubbleStruct;
     private Attributes _attributes;
@@ -75,8 +77,10 @@ public class Controller : MonoBehaviour, IKillable
     {
         _boxCollider = GetComponent<BoxCollider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        _animator = GetComponentInChildren<Animator>();
         _groundLayers = LayerMask.GetMask("Ground");
         _bubbleLayers = LayerMask.GetMask("Bubble");
+        _inputHash = Animator.StringToHash("Input");
 
         _attributes = new Attributes(_airBubbleTransform, _maxHealth, _bubbleResponse);
         _customCursor = FindFirstObjectByType<CustomCursor>();
@@ -89,6 +93,8 @@ public class Controller : MonoBehaviour, IKillable
     {
         TickTimers(Time.deltaTime);
         UpdateInput();
+
+        _animator.SetFloat(_inputHash, Mathf.Abs(_requestedMovement));
     }
 
     private void LateUpdate()
@@ -96,10 +102,7 @@ public class Controller : MonoBehaviour, IKillable
         _attributes.LateTick(Time.deltaTime);
 
         if (_attributes.CurrentHealth == 0)
-        {
-            _attributes.SetCurrentToMaxHealth();
             Kill();
-        }
     }
 
     private void FixedUpdate()

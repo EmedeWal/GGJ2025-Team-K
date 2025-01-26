@@ -118,7 +118,7 @@ namespace Bubbles
             if (!_collider.enabled)
                 return;
 
-            if (_capture.HasCapture)
+            if (_capture.CaptureTarget)
                 _capture.Follow();
             else
             {
@@ -133,15 +133,17 @@ namespace Bubbles
             if (!_collider.enabled)
                 return;
 
-            if (!_capture.HasCapture)
+            if (!_capture.CaptureTarget)
                 _motion.HandleMovement(_transform.right, _transform.up, _adjustedLifeTime, _lifeTimeLeft);
-            else
+            else if (_motion.EnableFloat)
                 _motion.HandleFloat(Time.fixedDeltaTime);
+            else
+                _rigidbody.linearDamping = 2;
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (!_capture.HasCapture && collision.transform.TryGetComponent(out BaseEnemy enemy) && enemy.GetState() is State.ROAMING)
+            if (!_capture.CaptureTarget && collision.transform.TryGetComponent(out BaseEnemy enemy) && enemy.CurrentState is State.ROAMING)
                 _capture.OnCaptured(transform, collision.transform);
             else if (collision.transform.TryGetComponent(out Controller controller))
             {
@@ -156,8 +158,14 @@ namespace Bubbles
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
-            if (release && _capture.HasCapture)
+            var target = _capture.CaptureTarget;
+            if (target)
+            {
                 _capture.OnReleased();
+
+                if (!release)
+                    target.GetComponent<IKillable>().Kill();
+            }
 
             Destroy(gameObject);
         }

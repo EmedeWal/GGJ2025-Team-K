@@ -16,10 +16,10 @@ public class Attributes
         _response = response;
 
         _scaleFactor = (airBubbleTransform.localScale.x + airBubbleTransform.localScale.y) / 2;
-        SetCurrentToMaxHealth();
-    }
+        Attributes_ResetGameState();
 
-    public void SetCurrentToMaxHealth() => CurrentHealth = _maximumHealth;
+        LevelManager.ResetGameState += Attributes_ResetGameState;
+    }
 
     public void LateTick(float deltaTime)
     {
@@ -42,4 +42,6 @@ public class Attributes
         CurrentHealth += health;
         CurrentHealth = Mathf.Min(CurrentHealth, _maximumHealth);
     }
+
+    private void Attributes_ResetGameState() => CurrentHealth = _maximumHealth;
 }

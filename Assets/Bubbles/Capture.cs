@@ -14,7 +14,7 @@ namespace Bubbles
 
     public class Capture
     {
-        public bool HasCapture => _struct.Transform;
+        public Transform CaptureTarget => _struct.Transform;
 
         private readonly float _alpha;
 
@@ -56,7 +56,7 @@ namespace Bubbles
             _struct.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
 
             if (_struct.Enemy)
-                _struct.Enemy.SetState(State.BUBBLED);
+                _struct.Enemy.Bubble();
 
             Captured?.Invoke();
         }
@@ -67,7 +67,7 @@ namespace Bubbles
 
             var isEnemy = _struct.Enemy;
             if (isEnemy)
-                _struct.Enemy.SetState(State.STUNNED);
+                _struct.Enemy.Stun();
 
             _struct.Transform.SetParent(null);
             _struct.Collider.enabled = true;

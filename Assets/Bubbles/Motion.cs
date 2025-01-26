@@ -40,9 +40,6 @@ namespace Bubbles
 
         public void HandleFloat(float fixedDeltaTime)
         {
-            if (!EnableFloat) 
-                return;
-
             if (_floatTimer > 0)
             {
                 var verticalVelocity = Mathf.Sin(_floatTimer * _floating.Frequency) * _floating.Intensity;

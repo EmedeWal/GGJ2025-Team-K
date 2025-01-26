@@ -9,6 +9,8 @@ public enum State
 
 public class BaseEnemy : MonoBehaviour, IKillable
 {
+    public State CurrentState => _CurrentState;
+
     [Header("SETTINGS")]    
 
     [Space]
@@ -20,12 +22,13 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     [Space]
     [Header("States")]
-    [SerializeField] protected State _CurrentState = State.ROAMING;
     [SerializeField] protected float _TotalStunTime = 1f;
+    protected State _CurrentState = State.ROAMING;
     protected float _StunTimer;
 
     private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rigidbody;
+    private Collider2D _collider;
     private LayerMask _groundLayers;
     private Vector2 _startPosition;
 
@@ -33,6 +36,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
     {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>(); 
+        _collider = GetComponent<Collider2D>(); 
         _groundLayers = LayerMask.GetMask("Ground");
         _startPosition = transform.position;
 
@@ -72,7 +76,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
             controller.Kill();
     }
 
-    private void LevelManager_resetGameState() => transform.position = _startPosition;
+    private void LevelManager_resetGameState() => ToggleActive(true);
 
     protected void HandleStuns()
     {
@@ -96,15 +100,29 @@ public class BaseEnemy : MonoBehaviour, IKillable
         return Physics2D.Raycast(origin, dir, dir.magnitude, _groundLayers);
     }
 
-    public void SetState(State state)
-    {
-        _CurrentState = state;
+    public void Bubble() => _CurrentState = State.BUBBLED;
 
-        if (state is State.STUNNED)
-            _StunTimer = _TotalStunTime;
+    public void Stun()
+    {
+        _CurrentState = State.STUNNED;
+        _StunTimer = _TotalStunTime;
     }
 
-    public State GetState() => _CurrentState;
+    public void Kill() => ToggleActive(false);
 
-    public void Kill() => Destroy(gameObject);
+    private void ToggleActive(bool active)
+    {
+        var state = active
+            ? State.ROAMING
+            : State.BUBBLED;
+        _CurrentState = state;
+
+        transform.position = _startPosition;
+
+        _collider.enabled = active;
+
+        var color = _spriteRenderer.color;
+        color.a = active ? 1 : 0;
+        _spriteRenderer.color = color;
+    }
 }

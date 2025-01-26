@@ -1,6 +1,5 @@
-using UnityEngine;
-using Unity.Cinemachine;
 using System.Collections.Generic;
+using UnityEngine;
 using System;
 
 public class LevelManager : MonoBehaviour
@@ -15,7 +14,7 @@ public class LevelManager : MonoBehaviour
     public bool staticCamera = true;
 
     [SerializeField] private List<GameObject> playerSpawns;
-
+    
     [SerializeField] private Collider2D bounds1;
     [SerializeField] private Collider2D bounds2;
     [SerializeField] private Collider2D bounds3;
@@ -94,5 +93,7 @@ public class LevelManager : MonoBehaviour
         }
         currentLevel = newLevel;
         player.transform.position = playerSpawns[currentLevel - 1].transform.position;
+
+        ResetGameState?.Invoke();
     }
 }
