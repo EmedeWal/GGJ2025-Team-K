@@ -5,7 +5,7 @@ public class ExitDoor : MonoBehaviour
 {
     private LevelManager manager;
     public bool unlocked = false;
-    [SerializeField] private doorType type = doorType.unlocked;
+    public doorType type = doorType.unlocked;
 
     private int startingEnemies;
     public int enemiesLeft = 3;
@@ -50,7 +50,7 @@ public class ExitDoor : MonoBehaviour
                 unlocked = true;
                 GetComponent<SpriteRenderer>().color = Color.black;
             }
-            // enemiesLeft = startingEnemies;
+            enemiesLeft = startingEnemies;
         }
     }
 

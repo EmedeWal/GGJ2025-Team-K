@@ -28,7 +28,8 @@ public class TriggerableByButton : MonoBehaviour
                 if (TryGetComponent<ExitDoor>(out ExitDoor door))
                 {
                     door.unlocked = true;
-                    door.GetComponent<SpriteRenderer>().color = Color.black;
+                    if (door.type != ExitDoor.doorType.unlocked)
+                        door.GetComponent<SpriteRenderer>().color = Color.black;
                 }
                 break;
             case triggerableType.turnsUnsolid:
@@ -52,7 +53,8 @@ public class TriggerableByButton : MonoBehaviour
                 if (TryGetComponent<ExitDoor>(out ExitDoor door))
                 {
                     door.unlocked = false;
-                    door.GetComponent<SpriteRenderer>().color = Color.white;
+                    if (door.type != ExitDoor.doorType.unlocked)
+                        door.GetComponent<SpriteRenderer>().color = Color.white;
                 }
                 break;
             case triggerableType.turnsUnsolid:
