@@ -10,7 +10,7 @@ public enum State
 public class BaseEnemy : MonoBehaviour, IKillable
 {
     public State CurrentState => _CurrentState;
-    public bool Enabled => _spriteRenderer.color.a != 0;
+    public bool Active => _spriteRenderer.color.a != 0;
 
     [Header("SETTINGS")]    
 
@@ -41,6 +41,8 @@ public class BaseEnemy : MonoBehaviour, IKillable
         _groundLayers = LayerMask.GetMask("Ground");
         _startPosition = transform.position;
 
+        Utils.SetRigidbody(_rigidbody);
+
         if (_Direction < 0)
             _spriteRenderer.flipX = !_spriteRenderer.flipX;
 
@@ -49,6 +51,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     protected virtual void FixedUpdate()
     {
+        Debug.Log(_CurrentState);
         switch (_CurrentState)
         {
             case State.ROAMING:
@@ -64,6 +67,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
             case State.BUBBLED:
                 break;
             case State.STUNNED:
+                Debug.Log("handle stuns");
                 HandleStuns();
                 break;
             default:
@@ -81,7 +85,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     protected void HandleStuns()
     {
-        _StunTimer -= Time.deltaTime;
+        _StunTimer -= Time.fixedDeltaTime;
         if (_StunTimer <= 0)
             _CurrentState = State.ROAMING;
     }
@@ -105,6 +109,7 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     public void Stun()
     {
+        Debug.Log("stunned");
         _CurrentState = State.STUNNED;
         _StunTimer = _TotalStunTime;
     }
@@ -113,6 +118,8 @@ public class BaseEnemy : MonoBehaviour, IKillable
 
     private void ToggleActive(bool active)
     {
+        Debug.Log("Set active: " + active);
+
         var state = active
             ? State.ROAMING
             : State.BUBBLED;

@@ -40,7 +40,7 @@ public class ExitDoor : MonoBehaviour
         {
             foreach (var enemy in enemies)
             {
-                if (!enemy.GetComponent<BaseEnemy>().Enabled)
+                if (!enemy.GetComponent<BaseEnemy>().Active)
                 {
                     enemiesLeft -= 1;
                 }

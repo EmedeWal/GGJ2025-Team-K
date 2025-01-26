@@ -2,6 +2,7 @@ namespace Bubbles
 {
     using UnityEngine;
     using System;
+    using System.Text.RegularExpressions;
 
     public struct SinMovementStruct
     {
@@ -169,15 +170,13 @@ namespace Bubbles
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
-            var target = _capture.CaptureTarget;
-            if (target)
+            if (_capture.CaptureTarget)
             {
-                _capture.OnReleased();
-
-                if (!release)
-                    target.GetComponent<IKillable>().Kill();
+                if (release)
+                    _capture.OnReleased();
+                else
+                    _capture.CaptureTarget.GetComponent<IKillable>().Kill();
             }
-
             Destroy(gameObject);
         }
 

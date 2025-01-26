@@ -101,8 +101,8 @@ public class Controller : MonoBehaviour, IKillable
     {
         _attributes.Cleanup();
 
-        foreach (var bubble in _bubbles)
-            bubble.OnPop(release: true, explode: false);
+        for (int i = _bubbles.Count - 1; i >= 0; i--)
+            _bubbles[i].OnPop(release: true, explode: false);
     }
 
     private void Update()
@@ -209,7 +209,11 @@ public class Controller : MonoBehaviour, IKillable
                 // Release BUBBLED. Either launch (if no overlap) or dissapate
                 var radius = _bubbleStruct.Collider.radius;
                 if (!Physics2D.OverlapCircle(spawnPosition, radius, _groundLayers))
+                {
+                    var force = _jumpForce * 0.5f * _bubbleStruct.Charge;
+                    _rigidbody.AddForce(-direction * force, ForceMode2D.Impulse);
                     _bubbleStruct.Bubble.Launch(charge);
+                }
                 else
                 {
                     _attributes.AddHealth(_bubbleStruct.Bubble.Volume);
