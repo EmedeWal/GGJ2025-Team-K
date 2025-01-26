@@ -175,11 +175,18 @@ public class Controller : MonoBehaviour, IKillable
         var spawnPosition = playerPos + direction * _spawnOffset;
 
         if (_bubbleStruct.Bubble)
-        { 
+        {
+            // Initialise slider
+            if (!_customSlider.IsCharging)
+                _customSlider.InitializeChargeSlider();
+
             // Add charge
             _bubbleStruct.Charge += deltaTime;
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);
             var charge = Mathf.Clamp(_bubbleStruct.Charge, 1, 2);
+
+            // add charge to slider
+            _customSlider.SliderCharging(charge);
 
             // Maintain BUBBLED
             if (_requestedSustainedShoot)
@@ -203,6 +210,7 @@ public class Controller : MonoBehaviour, IKillable
                     Destroy(_bubbleStruct.Bubble.gameObject);
 
                 _bubbleStruct.Bubble = null;
+                _customSlider.EndCharge(charge);
             }
         }
         else if (_requestedShoot)
