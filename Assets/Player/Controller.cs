@@ -54,6 +54,10 @@ public class Controller : MonoBehaviour, IKillable
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _bubbleResponse = 1f;
 
+    [Space]
+    [Header("Audio")]
+    [SerializeField] private AudioClip _blowClip;
+
     private BoxCollider2D _boxCollider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -177,6 +181,7 @@ public class Controller : MonoBehaviour, IKillable
 
         if (_bubbleStruct.Bubble)
         {
+            AudioManager.Instance.PlayClip(_blowClip);
             // Add charge
             _bubbleStruct.Charge += deltaTime;
             _bubbleStruct.Charge = Mathf.Clamp(_bubbleStruct.Charge, 0, 2f);

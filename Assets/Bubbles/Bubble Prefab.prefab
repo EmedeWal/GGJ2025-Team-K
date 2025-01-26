@@ -121,6 +121,7 @@ MonoBehaviour:
   _floatFrequency: 2
   _floatSlowdown: 2
   _transparency: 0.5
+  _popClip: {fileID: 8300000, guid: 452c4c62e138b6b4eb3c875dd05cbb33, type: 3}
 --- !u!1 &7309242600320845641
 GameObject:
   m_ObjectHideFlags: 0

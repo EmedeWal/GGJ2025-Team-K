@@ -337,3 +337,4 @@ MonoBehaviour:
   _airBubbleTransform: {fileID: 8339777808591014633}
   _maxHealth: 100
   _bubbleResponse: 4
+  _blowClip: {fileID: 8300000, guid: a6df251700279d647bbbe925231f8bd2, type: 3}

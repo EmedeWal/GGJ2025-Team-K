@@ -48,6 +48,10 @@ namespace Bubbles
         [Range(0, 1)]
         [SerializeField] private float _transparency = 0.5f;
 
+        [Space]
+        [Header("Audio")]
+        [SerializeField] private AudioClip _popClip;
+
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
         private Transform _transform;
@@ -157,6 +161,7 @@ namespace Bubbles
 
         public void Pop(bool release, bool explode)
         {
+            AudioManager.Instance.PlayClip(_popClip);
             if (explode)
                 _explode.CastExplosion(_rigidbody, (Vector2)_transform.position);
 
