@@ -10,6 +10,7 @@ public enum State
 public class BaseEnemy : MonoBehaviour, IKillable
 {
     public State CurrentState => _CurrentState;
+    public bool Enabled => _spriteRenderer.color.a != 0;
 
     [Header("SETTINGS")]    
 
