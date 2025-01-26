@@ -18,10 +18,13 @@ public class Button : MonoBehaviour
 
     private void LevelManager_resetGameState()
     {
-        _isPressed = false;
-        var pos = _pressedObject.transform.position;
-        pos.y += 0.17f;
-        _pressedObject.transform.position = pos;
+        if (_isPressed)
+        {
+            _isPressed = false;
+            var pos = _pressedObject.transform.position;
+            pos.y += 0.17f;
+            _pressedObject.transform.position = pos;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collider)
