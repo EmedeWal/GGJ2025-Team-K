@@ -4,10 +4,16 @@ public class TriggerableByButton : MonoBehaviour
 {
     [SerializeField] private triggerableType type;
     private Collider2D _collider;
+    private SpriteRenderer _renderer;
 
     private void Start()
     {
         _collider = GetComponent<Collider2D>();
+        _renderer = GetComponentInChildren<SpriteRenderer>();
+        if (type == triggerableType.turnsUnsolid)
+        {
+            _renderer.color = Color.red;
+        }
     }
     public enum triggerableType
     {
@@ -26,6 +32,10 @@ public class TriggerableByButton : MonoBehaviour
                 break;
             case triggerableType.turnsUnsolid:
                 //TODO: Change sprite here
+                if (TryGetComponent<UnsolidPlatform>(out UnsolidPlatform platform))
+                {
+                    platform.changeColor(false);
+                }
                 _collider.enabled = false;
                 break;
             default:
@@ -45,6 +55,10 @@ public class TriggerableByButton : MonoBehaviour
                 break;
             case triggerableType.turnsUnsolid:
                 //TODO: Change sprite here
+                if (TryGetComponent<UnsolidPlatform>(out UnsolidPlatform platform))
+                {
+                    platform.changeColor(true);
+                }
                 _collider.enabled = true;
                 break;
             default:
