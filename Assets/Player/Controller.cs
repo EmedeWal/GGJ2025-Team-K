@@ -225,6 +225,10 @@ public class Controller : MonoBehaviour, IKillable
                     RemoveBubble(_bubbleStruct.Bubble);
                 }
                 _bubbleStruct.Bubble = null;
+                foreach (GameObject go in GameObject.FindGameObjectsWithTag("SFX"))
+                {
+                    go.GetComponent<AudioSource>().Stop();
+                }
                 _isPlayingClip = false;
             }
         }
