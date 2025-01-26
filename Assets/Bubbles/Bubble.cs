@@ -147,6 +147,7 @@ namespace Bubbles
                 _capture.OnCaptured(transform, collision.transform);
             else if (collision.transform.TryGetComponent(out Controller controller))
             {
+                controller.OnHealthAdd(Volume);
                 var explode = controller.Rigidbody.linearVelocity.y < 0;
                 controller.Attributes.AddHealth(Volume);
                 Pop(release: true, explode: explode);

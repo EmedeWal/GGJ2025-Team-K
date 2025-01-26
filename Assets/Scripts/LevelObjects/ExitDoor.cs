@@ -9,7 +9,7 @@ public class ExitDoor : MonoBehaviour
 
     private int startingEnemies;
     public int enemiesLeft = 3;
-    [SerializeField] private List<BaseEnemy> enemies;
+    [SerializeField] private List<GameObject> enemies;
 
     public enum doorType
     {
@@ -28,9 +28,9 @@ public class ExitDoor : MonoBehaviour
     {
         if (type == doorType.enemyLocked)
         {
-            foreach (BaseEnemy enemy in enemies)
+            foreach (var enemy in enemies)
             {
-                if (!enemy.Enabled)
+                if (!enemy.GetComponent<BaseEnemy>().Enabled)
                 {
                     enemiesLeft -= 1;
                 }
@@ -39,7 +39,7 @@ public class ExitDoor : MonoBehaviour
             {
                 unlocked = true;
             }
-            enemiesLeft = startingEnemies;
+            // enemiesLeft = startingEnemies;
         }
     }
 

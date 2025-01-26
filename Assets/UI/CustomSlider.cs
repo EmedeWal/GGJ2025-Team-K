@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements.Experimental;
 
 public class CustomSlider : MonoBehaviour
 {
@@ -10,14 +11,14 @@ public class CustomSlider : MonoBehaviour
 
     private float _minValue = 0;
     private float _maxValue = 100;
-    private float _value = 1;
+    private float _value = 100;
 
     private Slider _thisSlider;
     private Slider _newSlider;
     private Controller _controller;
 
     private bool _isCharging = false;
-    public bool IsCharging { get; private set; }
+    public bool IsCharging => _isCharging;
     
 
     void Start()
@@ -26,48 +27,49 @@ public class CustomSlider : MonoBehaviour
         _controller = FindFirstObjectByType<Controller>();
         _thisSlider.maxValue = 100;
         _thisSlider.minValue = 0;
-        _thisSlider.value = _thisSlider.maxValue;
+        _thisSlider.value = 100;
     }
 
     void FixedUpdate()
     {
-        
+        print(_thisSlider.value);
     }
 
     public void InitializeChargeSlider()
     {
-        var tempSlider = Instantiate(_newSliderPrefab, new Vector3(-(195 + (100 - _value)), 195.5f), Quaternion.identity);
+        var tempSlider = Instantiate(_newSliderPrefab, gameObject.transform);
+        tempSlider.transform.position = new Vector3(0, 0);
         _newSlider = tempSlider.GetComponent<Slider>();
-        _newSlider.value = 1;
-        _newSlider.maxValue = 2;
+        _newSlider.value = 10;
+        _newSlider.maxValue = 20;
         _newSlider.minValue = 0;
 
         _isCharging = true;
     }
     public void SliderCharging(float charge)
     {
-        _newSlider.value = charge;
+        _newSlider.value = 10 * charge;
     }
 
     public void EndCharge(float charge)
     {
-        _thisSlider.value -= charge;
+        AddValue(-10 * charge);
         Destroy(_newSlider.gameObject);
         _isCharging = false;
     }
 
+    public void AddValue(float v)
+    {
+        print("increased value by " + v);
+        _value += v;
+        _thisSlider.value = _value;
+    }
 
-    // void AddValue(float value, Slider slider)
-    // {
-    //     _value += value;
-    //     if (_value > _maxValue)
-    //     {
-    //         _value = _maxValue;
-    //     }
-    // }
+    public void ResetSlider()
+    {
+        _value = 100;
+        _isCharging = false;
+        _thisSlider.value = _value;
+    }
 
-    // void RemoveValue(float value, Slider slider)
-    // {
-    //     _value -= value;
-    // }
 }

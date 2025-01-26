@@ -299,6 +299,10 @@ public class Controller : MonoBehaviour, IKillable
         return Physics2D.OverlapBox(origin, size, 0, _groundLayers);
     }
 
+    public void OnHealthAdd(float v)
+    {
+        _healthSlider.value += v;
+    }
     public void Kill()
     {
         var levelManager = GameObject.FindFirstObjectByType<LevelManager>();
