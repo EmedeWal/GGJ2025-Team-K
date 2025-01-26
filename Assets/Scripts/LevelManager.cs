@@ -79,12 +79,17 @@ public class LevelManager : MonoBehaviour
             case 6:
                 _camera._levelBounds = bounds6;
                 break;
+            case 7:
             default:
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Ending Scene");
                 break;
         }
         currentLevel = newLevel;
-        player.transform.position = playerSpawns[currentLevel - 1].transform.position;
+        if (currentLevel < 7)
+        {
+            player.transform.position = playerSpawns[currentLevel - 1].transform.position;
 
-        ResetGameState?.Invoke();
+            ResetGameState?.Invoke();
+        }
     }
 }
