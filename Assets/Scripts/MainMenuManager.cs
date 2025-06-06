@@ -4,7 +4,7 @@ public class MainMenuManager : MonoBehaviour
 {
     void Start()
     {
-        
+        Cursor.visible = true;
     }
 
     void Update()
